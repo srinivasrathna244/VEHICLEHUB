@@ -1,0 +1,152 @@
+.sell-container{
+
+    min-height:100vh;
+    padding:60px 8%;
+    background:#f5f7fb;
+
+}
+
+
+.sell-box{
+
+    max-width:900px;
+    margin:auto;
+    background:white;
+    padding:40px;
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+
+}
+
+
+.sell-box h1{
+
+    text-align:center;
+    margin-bottom:35px;
+    font-size:35px;
+
+}
+
+
+
+.form-group{
+
+    display:flex;
+    flex-direction:column;
+    margin-bottom:20px;
+
+}
+
+
+
+.form-group label{
+
+    font-weight:600;
+    margin-bottom:8px;
+
+}
+
+
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+
+    padding:14px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    font-size:15px;
+    outline:none;
+
+}
+
+
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+
+    border-color:#2563eb;
+
+}
+
+
+
+.form-row{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+
+}
+
+
+
+.sell-box button{
+
+    width:100%;
+    padding:16px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    font-size:18px;
+    cursor:pointer;
+    margin-top:10px;
+
+}
+
+
+
+.sell-box button:hover{
+
+    background:#1d4ed8;
+
+}
+
+
+
+/* Image Preview */
+
+#preview{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:15px;
+    margin-top:20px;
+
+}
+
+
+
+.preview-image{
+
+    width:120px;
+    height:100px;
+    object-fit:cover;
+    border-radius:10px;
+    border:2px solid #ddd;
+
+}
+
+
+
+
+@media(max-width:768px){
+
+
+    .sell-box{
+
+        padding:25px;
+
+    }
+
+
+    .form-row{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+}

@@ -1,0 +1,433 @@
+/* ===========================
+   RESET
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    background:#f5f7fb;
+    color:#222;
+}
+
+/* ===========================
+   NAVBAR
+=========================== */
+
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 8%;
+    background:#0f172a;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo a{
+    color:#fff;
+    font-size:30px;
+    text-decoration:none;
+    font-weight:700;
+}
+
+.nav-links{
+    display:flex;
+    list-style:none;
+    gap:30px;
+}
+
+.nav-links a{
+    color:white;
+    text-decoration:none;
+    font-weight:500;
+    transition:.3s;
+}
+
+.nav-links a:hover{
+    color:#38bdf8;
+}
+
+/* ===========================
+   HERO
+=========================== */
+
+.hero{
+    height:85vh;
+    background:linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+    url('/images/hero-bike.jpg') center/cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    color:white;
+    padding:20px;
+}
+
+.hero-content h1{
+    font-size:58px;
+    margin-bottom:20px;
+}
+
+.hero-content p{
+    font-size:22px;
+    margin-bottom:35px;
+}
+
+/* ===========================
+   SEARCH
+=========================== */
+
+.search-box{
+    display:flex;
+    justify-content:center;
+    max-width:700px;
+    margin:auto;
+}
+
+.search-box input{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:8px 0 0 8px;
+    font-size:16px;
+}
+
+.search-box button{
+    padding:16px 35px;
+    border:none;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    border-radius:0 8px 8px 0;
+    transition:.3s;
+}
+
+.search-box button:hover{
+    background:#1d4ed8;
+}
+
+/* ===========================
+   SECTION
+=========================== */
+
+section{
+    padding:70px 8%;
+}
+
+section h2{
+    text-align:center;
+    margin-bottom:40px;
+    font-size:34px;
+}
+
+/* ===========================
+   BRANDS
+=========================== */
+
+.brand-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:25px;
+}
+
+.brand-grid div{
+    background:white;
+    padding:35px;
+    text-align:center;
+    border-radius:12px;
+    font-size:20px;
+    font-weight:600;
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.brand-grid div:hover{
+    transform:translateY(-8px);
+}
+
+/* ===========================
+   BIKES
+=========================== */
+
+.bike-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+
+.bike-card{
+    background:white;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:.3s;
+}
+
+.bike-card:hover{
+    transform:translateY(-10px);
+}
+
+.bike-card img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.bike-card h3{
+    padding:18px;
+}
+
+.bike-card p{
+    padding:0 18px 20px;
+    font-size:18px;
+    color:#2563eb;
+    font-weight:600;
+}
+
+.bike-card button{
+    width:calc(100% - 36px);
+    margin:0 18px 20px;
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.bike-card button:hover{
+    background:#1d4ed8;
+}
+
+/* ===========================
+   FOOTER
+=========================== */
+
+footer{
+    background:#0f172a;
+    color:white;
+    text-align:center;
+    padding:50px 20px;
+}
+
+.footer-container h2{
+    margin-bottom:15px;
+}
+
+.footer-container p{
+    margin:10px 0;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:768px){
+
+.navbar{
+    flex-direction:column;
+    gap:20px;
+}
+
+.nav-links{
+    flex-direction:column;
+    text-align:center;
+}
+
+.hero-content h1{
+    font-size:38px;
+}
+
+.hero-content p{
+    font-size:18px;
+}
+
+.search-box{
+    flex-direction:column;
+}
+
+.search-box input{
+    border-radius:8px;
+    margin-bottom:10px;
+}
+
+.search-box button{
+    border-radius:8px;
+}
+
+}
+/* ===========================
+   HOME PAGE
+=========================== */
+
+.home-search{
+
+    padding:40px 8%;
+
+    background:#ffffff;
+
+}
+
+.home-search form{
+
+    max-width:800px;
+
+    margin:auto;
+
+    display:flex;
+
+}
+
+.home-search input{
+
+    flex:1;
+
+    padding:16px;
+
+    border:1px solid #ddd;
+
+    border-radius:8px 0 0 8px;
+
+    font-size:16px;
+
+}
+
+.home-search button{
+
+    padding:16px 35px;
+
+    border:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    border-radius:0 8px 8px 0;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.home-search button:hover{
+
+    background:#1d4ed8;
+
+}
+
+
+
+/* Categories */
+
+.category-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+
+    gap:25px;
+
+}
+
+.category-card{
+
+    background:white;
+
+    padding:35px;
+
+    text-align:center;
+
+    border-radius:12px;
+
+    font-size:20px;
+
+    font-weight:600;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.category-card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+/* Features */
+
+.features{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:25px;
+
+}
+
+.feature{
+
+    background:white;
+
+    padding:30px;
+
+    text-align:center;
+
+    border-radius:12px;
+
+    font-size:20px;
+
+    font-weight:600;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+.feature:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+/* Hero Button */
+
+.hero-btn{
+
+    display:inline-block;
+
+    padding:15px 35px;
+
+    background:#2563eb;
+
+    color:white;
+
+    text-decoration:none;
+
+    border-radius:8px;
+
+    transition:.3s;
+
+}
+
+.hero-btn:hover{
+
+    background:#1d4ed8;
+
+}

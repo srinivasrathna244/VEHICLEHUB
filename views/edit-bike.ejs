@@ -1,0 +1,192 @@
+<%- include("partials/header",{title:"Edit Bike"}) %>
+
+<%- include("partials/navbar",{user:user}) %>
+
+<section class="sell-bike-container">
+
+    <div class="sell-bike-card">
+
+        <h1>Edit Bike</h1>
+
+        <form
+            action="/edit-bike/<%= bike.id %>"
+            method="POST"
+            enctype="multipart/form-data">
+
+            <div class="form-group">
+
+                <label>Bike Name</label>
+
+                <input
+                    type="text"
+                    name="bike_name"
+                    value="<%= bike.bike_name %>"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Brand</label>
+
+                <input
+                    type="text"
+                    name="brand"
+                    value="<%= bike.brand %>"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Model</label>
+
+                <input
+                    type="text"
+                    name="model"
+                    value="<%= bike.model %>"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Year</label>
+
+                <input
+                    type="number"
+                    name="year"
+                    value="<%= bike.year %>"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Price</label>
+
+                <input
+                    type="number"
+                    name="price"
+                    value="<%= bike.price %>"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Kilometers Driven</label>
+
+                <input
+                    type="number"
+                    name="kilometers"
+                    value="<%= bike.kilometers %>"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Fuel Type</label>
+
+                <select name="fuel_type">
+
+                    <option value="Petrol" <%= bike.fuel_type==="Petrol"?"selected":"" %>>Petrol</option>
+
+                    <option value="Electric" <%= bike.fuel_type==="Electric"?"selected":"" %>>Electric</option>
+
+                    <option value="Diesel" <%= bike.fuel_type==="Diesel"?"selected":"" %>>Diesel</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Transmission</label>
+
+                <select name="transmission">
+
+                    <option value="Manual" <%= bike.transmission==="Manual"?"selected":"" %>>Manual</option>
+
+                    <option value="Automatic" <%= bike.transmission==="Automatic"?"selected":"" %>>Automatic</option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Owner Type</label>
+
+                <select name="owner_type">
+
+    <option value="1st Owner" <%= bike.owner_type==="1st Owner"?"selected":"" %>>
+        1st Owner
+    </option>
+
+    <option value="2nd Owner" <%= bike.owner_type==="2nd Owner"?"selected":"" %>>
+        2nd Owner
+    </option>
+
+    <option value="3rd Owner" <%= bike.owner_type==="3rd Owner"?"selected":"" %>>
+        3rd Owner
+    </option>
+
+    <option value="4th Owner" <%= bike.owner_type==="4th Owner"?"selected":"" %>>
+        4th Owner
+    </option>
+
+</select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>City</label>
+
+                <input
+                    type="text"
+                    name="city"
+                    value="<%= bike.city %>"
+                    required>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Description</label>
+
+                <textarea
+                    name="description"
+                    rows="5"><%= bike.description %></textarea>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Upload New Images (Optional)</label>
+
+                <input
+                    type="file"
+                    name="images"
+                    multiple
+                    accept="image/*">
+
+            </div>
+
+            <button
+                type="submit"
+                class="submit-btn">
+
+                Update Bike
+
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+<%- include("partials/footer") %>

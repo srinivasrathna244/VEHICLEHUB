@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BikeHub | Login</title>
+
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="left-panel">
+            <h1>BikeHub</h1>
+            <p>Welcome back! Login to continue exploring the best bikes.</p>
+        </div>
+
+        <div class="right-panel">
+
+            <h2>Login</h2>
+
+            <form id="loginForm" action="/login" method="POST">
+
+                <div class="input-box">
+                    <label>Email</label>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter Email"
+                        required>
+                </div>
+
+                <div class="input-box">
+                    <label>Password</label>
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Enter Password"
+                        required>
+                </div>
+
+                <button type="submit">
+                    Login
+                </button>
+
+                <p class="register-link">
+                    Don't have an account?
+                    <a href="/register">Register</a>
+                </p>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script src="/js/login.js"></script>
+
+</body>
+
+</html>

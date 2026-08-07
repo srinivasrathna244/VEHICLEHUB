@@ -1,0 +1,146 @@
+<%- include("partials/header",{title:"BikeHub"}) %>
+
+<%- include("partials/navbar",{user:user}) %>
+
+<!-- Hero Section -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <h1>Find Your Dream Bike</h1>
+
+        <p>
+
+            Buy and Sell New & Used Bikes Across India
+
+        </p>
+
+        <a href="/bikes" class="hero-btn">
+
+            Explore Bikes
+
+        </a>
+
+    </div>
+
+</section>
+
+
+
+<!-- Search -->
+
+<section class="home-search">
+
+    <form action="/search" method="GET">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search Bikes...">
+
+        <button type="submit">
+
+            Search
+
+        </button>
+
+    </form>
+
+</section>
+
+
+
+<!-- Categories -->
+
+<section class="categories">
+
+    <h2>Popular Brands</h2>
+
+    <div class="category-grid">
+
+        <div class="category-card">
+
+            Honda
+
+        </div>
+
+        <div class="category-card">
+
+            Yamaha
+
+        </div>
+
+        <div class="category-card">
+
+            KTM
+
+        </div>
+
+        <div class="category-card">
+
+            Hero
+
+        </div>
+
+        <div class="category-card">
+
+            Royal Enfield
+
+        </div>
+
+        <div class="category-card">
+
+            TVS
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- Why BikeHub -->
+
+<section class="why-bikehub">
+
+    <h2>
+
+        Why Choose BikeHub?
+
+    </h2>
+
+    <div class="features">
+
+        <div class="feature">
+
+            🚲 Verified Sellers
+
+        </div>
+
+        <div class="feature">
+
+            💰 Best Prices
+
+        </div>
+
+        <div class="feature">
+
+            📍 Search by City
+
+        </div>
+
+        <div class="feature">
+
+            🔒 Secure Platform
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<%- include("partials/footer") %>
