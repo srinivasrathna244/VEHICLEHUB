@@ -243,7 +243,7 @@ Main Tables:
 
 # 👨‍💻 Author
 
-**Sri**
+**Rathna Srinivas**
 
 B.Tech Student
 
