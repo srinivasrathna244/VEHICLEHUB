@@ -1,0 +1,80 @@
+<%- include('../partials/header', {title: 'Manage Reports'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="admin-page">
+    <div class="container">
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-flag"></i> Listing & Fraud Reports</h1>
+                <p>Review reports submitted by users regarding fraud, misrepresentation, or policy violations.</p>
+            </div>
+            <a href="/admin" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="status-tabs mb-24">
+            <a href="/admin/reports" class="status-tab <%= !filters.status ? 'active' : '' %>">All Reports</a>
+            <a href="/admin/reports?status=PENDING" class="status-tab <%= filters.status === 'PENDING' ? 'active' : '' %>">Pending</a>
+            <a href="/admin/reports?status=UNDER_REVIEW" class="status-tab <%= filters.status === 'UNDER_REVIEW' ? 'active' : '' %>">Under Review</a>
+            <a href="/admin/reports?status=RESOLVED" class="status-tab <%= filters.status === 'RESOLVED' ? 'active' : '' %>">Resolved</a>
+            <a href="/admin/reports?status=REJECTED" class="status-tab <%= filters.status === 'REJECTED' ? 'active' : '' %>">Dismissed</a>
+        </div>
+
+        <% if (reports.length === 0) { %>
+        <div class="empty-state-large">
+            <i class="fas fa-check-circle" style="color:#16a34a"></i>
+            <h3>No reports in this queue</h3>
+            <p>Platform listings are clean. No pending investigations.</p>
+        </div>
+        <% } else { %>
+        <div class="reports-grid">
+            <% reports.forEach(r => { %>
+            <div class="report-card status-border-<%= r.status.toLowerCase() %>">
+                <div class="report-header">
+                    <div>
+                        <span class="report-reason"><i class="fas fa-exclamation-circle"></i> <%= r.reason %></span>
+                        <span class="status-badge status-<%= r.status.toLowerCase() %>"><%= r.status %></span>
+                    </div>
+                    <small class="text-muted"><%= new Date(r.created_at).toLocaleDateString('en-IN', {month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'}) %></small>
+                </div>
+
+                <div class="report-body mt-12">
+                    <div class="report-target">
+                        <strong>Target Vehicle:</strong>
+                        <a href="/vehicles/<%= r.vehicle_id %>" target="_blank"><%= r.vehicle_title %> (<%= r.brand %> <%= r.model %>) <i class="fas fa-external-link-alt fa-xs"></i></a>
+                    </div>
+                    <div class="report-reporter mt-8">
+                        <strong>Reported by:</strong> <%= r.reporter_name %> (<%= r.reporter_email %>)
+                    </div>
+                    <div class="report-desc mt-8">
+                        <strong>Description:</strong> "<%= r.description %>"
+                    </div>
+                    <% if (r.admin_notes) { %>
+                    <div class="report-admin-notes mt-8">
+                        <strong>Admin Notes:</strong> <%= r.admin_notes %>
+                    </div>
+                    <% } %>
+                </div>
+
+                <!-- Update Status Form -->
+                <form action="/admin/reports/update" method="POST" class="report-actions-form mt-16">
+                    <input type="hidden" name="report_id" value="<%= r.id %>">
+                    <div class="form-row">
+                        <select name="status" class="form-control" style="max-width:160px">
+                            <option value="PENDING" <%= r.status === 'PENDING' ? 'selected' : '' %>>Pending</option>
+                            <option value="UNDER_REVIEW" <%= r.status === 'UNDER_REVIEW' ? 'selected' : '' %>>Under Review</option>
+                            <option value="RESOLVED" <%= r.status === 'RESOLVED' ? 'selected' : '' %>>Resolved</option>
+                            <option value="REJECTED" <%= r.status === 'REJECTED' ? 'selected' : '' %>>Dismiss</option>
+                        </select>
+                        <input type="text" name="admin_notes" class="form-control" placeholder="Add resolution note..." value="<%= r.admin_notes || '' %>">
+                        <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                    </div>
+                </form>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

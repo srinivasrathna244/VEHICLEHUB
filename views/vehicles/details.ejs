@@ -1,0 +1,534 @@
+<%- include('../partials/header', {title: title}) %>
+<%- include('../partials/navbar') %>
+
+<div class="details-page">
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="/">Home</a> <i class="fas fa-chevron-right"></i>
+            <a href="/vehicles">Vehicles</a> <i class="fas fa-chevron-right"></i>
+            <a href="/vehicles?category=<%= vehicle.category_slug %>"><%= vehicle.category_name %></a> <i class="fas fa-chevron-right"></i>
+            <span><%= vehicle.title %></span>
+        </div>
+
+        <div class="details-layout">
+            <!-- Left Column: Gallery + Details -->
+            <div class="details-main">
+                <!-- Image Gallery -->
+                <div class="image-gallery">
+                    <div class="main-image-wrap">
+                        <img id="mainImage"
+                            src="<%= images.length > 0 ? (images[0].image.startsWith('http') ? images[0].image : '/uploads/vehicles/' + images[0].image) : '/images/no-vehicle.jpg' %>"
+                            alt="<%= vehicle.title %>"
+                            onerror="this.src='/images/no-vehicle.jpg'">
+                        <div class="img-counter"><span id="imgIndex">1</span>/<%= images.length || 1 %></div>
+                        <% if (images.length > 1) { %>
+                        <button class="gallery-nav prev" id="prevImg" type="button"><i class="fas fa-chevron-left"></i></button>
+                        <button class="gallery-nav next" id="nextImg" type="button"><i class="fas fa-chevron-right"></i></button>
+                        <% } %>
+                    </div>
+                    <% if (images.length > 1) { %>
+                    <div class="thumbnail-row">
+                        <% images.forEach((img, i) => { %>
+                        <% const imgSrc = img.image.startsWith('http') ? img.image : '/uploads/vehicles/' + img.image; %>
+                        <img src="<%= imgSrc %>" alt="Thumbnail <%= i+1 %>"
+                            class="thumbnail <%= i === 0 ? 'active' : '' %>"
+                            onclick="setMainImage('<%= imgSrc %>', <%= i %>)"
+                            onerror="this.src='/images/no-vehicle.jpg'">
+                        <% }) %>
+                    </div>
+                    <% } %>
+                </div>
+
+                <!-- Vehicle Info Card -->
+                <div class="info-card">
+                    <div class="info-card-header">
+                        <div>
+                            <div class="detail-category-badge"><i class="fas <%= vehicle.category_icon %>"></i> <%= vehicle.category_name %></div>
+                            <h1 class="vehicle-detail-title"><%= vehicle.title %></h1>
+                        </div>
+                        <div class="detail-price-box">
+                            <div class="detail-price">₹ <%= Number(vehicle.price).toLocaleString('en-IN') %></div>
+                            <div class="detail-location"><i class="fas fa-map-marker-alt"></i> <%= vehicle.registration_city || vehicle.location || 'India' %></div>
+                        </div>
+                    </div>
+
+                    <!-- Key Specs -->
+                    <div class="key-specs">
+                        <div class="spec-item"><i class="fas fa-road"></i><span><%= vehicle.kilometers ? vehicle.kilometers.toLocaleString('en-IN') + ' km' : 'N/A' %></span><label>Kilometers</label></div>
+                        <div class="spec-item"><i class="fas fa-calendar-alt"></i><span><%= vehicle.manufacturing_year %></span><label>Year</label></div>
+                        <div class="spec-item"><i class="fas fa-gas-pump"></i><span><%= vehicle.fuel_type %></span><label>Fuel</label></div>
+                        <div class="spec-item"><i class="fas fa-cog"></i><span><%= vehicle.transmission %></span><label>Transmission</label></div>
+                        <div class="spec-item"><i class="fas fa-user"></i><span><%= vehicle.ownership_type %></span><label>Ownership</label></div>
+                        <div class="spec-item"><i class="fas fa-star"></i><span><%= vehicle.condition_rating %></span><label>Condition</label></div>
+                    </div>
+                </div>
+
+                <!-- Detailed Specs Table -->
+                <div class="info-card">
+                    <h3 class="card-title"><i class="fas fa-info-circle"></i> Vehicle Details</h3>
+                    <div class="specs-table">
+                        <div class="spec-row"><div class="spec-key">Brand</div><div class="spec-val"><%= vehicle.brand %></div></div>
+                        <div class="spec-row"><div class="spec-key">Model</div><div class="spec-val"><%= vehicle.model %></div></div>
+                        <% if (vehicle.variant) { %><div class="spec-row"><div class="spec-key">Variant</div><div class="spec-val"><%= vehicle.variant %></div></div><% } %>
+                        <div class="spec-row"><div class="spec-key">Manufacturing Year</div><div class="spec-val"><%= vehicle.manufacturing_year %></div></div>
+                        <% if (vehicle.registration_year) { %><div class="spec-row"><div class="spec-key">Registration Year</div><div class="spec-val"><%= vehicle.registration_year %></div></div><% } %>
+                        <div class="spec-row"><div class="spec-key">Kilometers</div><div class="spec-val"><%= vehicle.kilometers ? vehicle.kilometers.toLocaleString('en-IN') + ' km' : 'N/A' %></div></div>
+                        <% if (vehicle.mileage) { %><div class="spec-row"><div class="spec-key">Mileage</div><div class="spec-val"><%= vehicle.mileage %></div></div><% } %>
+                        <% if (vehicle.engine_capacity) { %><div class="spec-row"><div class="spec-key">Engine Capacity</div><div class="spec-val"><%= vehicle.engine_capacity %></div></div><% } %>
+                        <div class="spec-row"><div class="spec-key">Fuel Type</div><div class="spec-val"><%= vehicle.fuel_type %></div></div>
+                        <div class="spec-row"><div class="spec-key">Transmission</div><div class="spec-val"><%= vehicle.transmission %></div></div>
+                        <% if (vehicle.vehicle_color) { %><div class="spec-row"><div class="spec-key">Color</div><div class="spec-val"><%= vehicle.vehicle_color %></div></div><% } %>
+                        <div class="spec-row"><div class="spec-key">Ownership</div><div class="spec-val"><%= vehicle.ownership_type %></div></div>
+                        <div class="spec-row"><div class="spec-key">Condition</div><div class="spec-val"><%= vehicle.condition_rating %></div></div>
+                        <% if (vehicle.insurance_status) { %><div class="spec-row"><div class="spec-key">Insurance</div><div class="spec-val"><%= vehicle.insurance_status %></div></div><% } %>
+                        <% if (vehicle.registration_number) { %><div class="spec-row"><div class="spec-key">Registration No.</div><div class="spec-val"><strong><%= vehicle.registration_number %></strong></div></div><% } %>
+                        <% if (vehicle.registration_state) { %><div class="spec-row"><div class="spec-key">Reg. State</div><div class="spec-val"><%= vehicle.registration_state %></div></div><% } %>
+                        <% if (vehicle.registration_district) { %><div class="spec-row"><div class="spec-key">Reg. District</div><div class="spec-val"><%= vehicle.registration_district %></div></div><% } %>
+                        <% if (vehicle.registration_city) { %><div class="spec-row"><div class="spec-key">Reg. City</div><div class="spec-val"><%= vehicle.registration_city %></div></div><% } %>
+                        <div class="spec-row"><div class="spec-key">Views</div><div class="spec-val"><%= vehicle.views_count %> times viewed</div></div>
+                        <div class="spec-row"><div class="spec-key">Listed On</div><div class="spec-val"><%= new Date(vehicle.created_at).toLocaleDateString('en-IN', {year:'numeric',month:'long',day:'numeric'}) %></div></div>
+                    </div>
+                </div>
+
+                <!-- Condition & Damage Details -->
+                <% if (vehicle.scratches || vehicle.dents || vehicle.accident_history || vehicle.repairs || vehicle.mechanical_issues) { %>
+                <div class="info-card condition-card">
+                    <h3 class="card-title"><i class="fas fa-exclamation-triangle"></i> Condition & Damage Disclosure</h3>
+                    <p class="condition-disclaimer"><i class="fas fa-info-circle"></i> Information below is provided by the seller and has not been independently verified by VehicleHub.</p>
+                    <% if (vehicle.scratches) { %><div class="condition-item"><span class="cond-label">Scratches:</span> <%= vehicle.scratches %></div><% } %>
+                    <% if (vehicle.dents) { %><div class="condition-item"><span class="cond-label">Dents:</span> <%= vehicle.dents %></div><% } %>
+                    <% if (vehicle.accident_history) { %><div class="condition-item"><span class="cond-label">Accident History:</span> <%= vehicle.accident_history %></div><% } %>
+                    <% if (vehicle.repairs) { %><div class="condition-item"><span class="cond-label">Repairs Done:</span> <%= vehicle.repairs %></div><% } %>
+                    <% if (vehicle.mechanical_issues) { %><div class="condition-item"><span class="cond-label">Mechanical Issues:</span> <%= vehicle.mechanical_issues %></div><% } %>
+                </div>
+                <% } %>
+
+                <!-- Description -->
+                <% if (vehicle.description) { %>
+                <div class="info-card">
+                    <h3 class="card-title"><i class="fas fa-align-left"></i> Description</h3>
+                    <p class="vehicle-description"><%= vehicle.description %></p>
+                </div>
+                <% } %>
+
+                <!-- Challan Verification -->
+                <div class="info-card challan-card">
+                    <h3 class="card-title"><i class="fas fa-clipboard-check"></i> Official Verification Status</h3>
+                    <div class="challan-status">
+                        <div class="challan-disclaimer">
+                            <i class="fas fa-shield-alt"></i>
+                            <strong>Vehicle information is seller-provided unless verified through an authorized source.</strong>
+                        </div>
+                        <% if (challanData && !challanData.available) { %>
+                        <div class="challan-unavailable">
+                            <i class="fas fa-info-circle"></i>
+                            <%= challanData.message || 'Official challan verification is currently unavailable.' %>
+                        </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Report Button (Always functional) -->
+                <div class="report-section">
+                    <button type="button" class="btn-report" onclick="openModal('reportModal')">
+                        <i class="fas fa-flag"></i> Report this Listing
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Seller + Actions -->
+            <aside class="details-sidebar">
+                <!-- Seller Info -->
+                <div class="seller-card">
+                    <h3 class="card-title">Seller Information</h3>
+                    <div class="seller-profile">
+                        <img src="/uploads/avatars/<%= vehicle.seller_avatar || 'default-avatar.png' %>"
+                            alt="<%= vehicle.seller_first_name %>"
+                            class="seller-avatar"
+                            onerror="this.src='/images/default-avatar.png'">
+                        <div class="seller-info">
+                            <div class="seller-name"><%= vehicle.seller_first_name %> <%= vehicle.seller_last_name %></div>
+                            <% if (sellerStats.avgRating > 0) { %>
+                            <div class="seller-rating">
+                                <% for (let i = 1; i <= 5; i++) { %>
+                                <i class="fas fa-star <%= i <= Math.round(sellerStats.avgRating) ? 'filled' : '' %>"></i>
+                                <% } %>
+                                <span><%= sellerStats.avgRating %> (<%= sellerStats.totalReviews %> reviews)</span>
+                            </div>
+                            <% } %>
+                            <div class="seller-meta"><i class="fas fa-list"></i> <%= sellerStats.totalListings %> listing(s)</div>
+                            <div class="seller-meta"><i class="fas fa-calendar"></i> Member since <%= new Date(vehicle.seller_joined_at).toLocaleDateString('en-IN', {month:'short', year:'numeric'}) %></div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Actions (All 3 Buttons) -->
+                    <div class="contact-actions">
+                        <!-- Button 1: Call Seller -->
+                        <a href="tel:+91<%= vehicle.seller_phone %>" class="btn btn-call btn-block">
+                            <i class="fas fa-phone"></i> Call Seller (+91 <%= vehicle.seller_phone %>)
+                        </a>
+
+                        <!-- Button 2: WhatsApp Chat -->
+                        <% if (whatsappUrl) { %>
+                        <a href="<%= whatsappUrl %>" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp btn-block">
+                            <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+                        </a>
+                        <% } %>
+
+                        <!-- Button 3: Send Message / Message Seller -->
+                        <% if (user && user.id === vehicle.seller_id) { %>
+                        <a href="/vehicles/edit/<%= vehicle.id %>" class="btn btn-outline btn-block">
+                            <i class="fas fa-edit"></i> Edit Your Listing
+                        </a>
+                        <small class="text-muted" style="text-align:center;display:block;"><i class="fas fa-info-circle"></i> You posted this listing</small>
+                        <% } else { %>
+                        <button type="button" class="btn btn-message btn-block" onclick="openModal('messageModal')">
+                            <i class="fas fa-comment-dots"></i> <%= user ? 'Send Message' : 'Message Seller' %>
+                        </button>
+                        <% } %>
+
+                        <!-- Favorite Button (Always functional, never 404) -->
+                        <% if (user && user.id === vehicle.seller_id) { %>
+                        <a href="/my-listings" class="btn btn-block btn-outline">
+                            <i class="fas fa-list-alt"></i> View in My Listings
+                        </a>
+                        <% } else if (user) { %>
+                        <form action="/favorites/toggle/<%= vehicle.id %>" method="POST" style="margin:0">
+                            <button type="submit" class="btn btn-block btn-fav-detail <%= isFavorited ? 'favorited' : '' %>">
+                                <i class="<%= isFavorited ? 'fas' : 'far' %> fa-heart"></i>
+                                <%= isFavorited ? 'Saved to Favorites' : 'Save to Favorites' %>
+                            </button>
+                        </form>
+                        <% } else { %>
+                        <a href="/favorites/toggle/<%= vehicle.id %>" class="btn btn-block btn-fav-detail">
+                            <i class="far fa-heart"></i> Save to Favorites
+                        </a>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Seller Reviews Section -->
+                <div class="seller-card">
+                    <div class="section-header-inline" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <h3 class="card-title" style="margin-bottom:0">Buyer Reviews</h3>
+                        <% if (!user || user.id !== vehicle.seller_id) { %>
+                        <button type="button" class="btn btn-sm btn-outline" onclick="openModal('reviewModal')">
+                            <i class="fas fa-star"></i> Write Review
+                        </button>
+                        <% } %>
+                    </div>
+
+                    <% if (sellerReviews && sellerReviews.length > 0) { %>
+                    <% sellerReviews.forEach(r => { %>
+                    <div class="review-item">
+                        <div class="review-header">
+                            <img src="/uploads/avatars/<%= r.profile_photo || 'default-avatar.png' %>" alt="<%= r.first_name %>" class="review-avatar" onerror="this.src='/images/default-avatar.png'">
+                            <div>
+                                <div class="review-name"><%= r.first_name %> <%= r.last_name ? r.last_name.charAt(0) + '.' : '' %></div>
+                                <div class="review-stars">
+                                    <% for (let i = 1; i <= 5; i++) { %><i class="fas fa-star <%= i <= r.rating ? 'filled' : '' %>"></i><% } %>
+                                </div>
+                            </div>
+                        </div>
+                        <% if (r.comment) { %><p class="review-comment"><%= r.comment %></p><% } %>
+                    </div>
+                    <% }) %>
+                    <% } else { %>
+                    <p class="text-muted" style="font-size:13px;padding:8px 0;">No reviews for this seller yet. Be the first to review!</p>
+                    <% } %>
+
+                    <% if (user && user.id === vehicle.seller_id) { %>
+                    <small class="text-muted" style="display:block;margin-top:8px;"><i class="fas fa-info-circle"></i> Sellers cannot review their own listings.</small>
+                    <% } %>
+                </div>
+
+                <!-- Report Listing in Sidebar -->
+                <div style="text-align:center;margin-top:12px;margin-bottom:8px;">
+                    <button type="button" class="btn-report" onclick="openModal('reportModal')" style="font-size:13px;color:var(--text-muted);display:inline-flex;align-items:center;gap:6px;cursor:pointer;background:none;border:none;">
+                        <i class="fas fa-flag" style="color:#ef4444;"></i> Report this Listing
+                    </button>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Similar Vehicles -->
+        <% if (similarVehicles && similarVehicles.length > 0) { %>
+        <div class="similar-section" style="margin-top:40px;">
+            <h2>Similar Vehicles You May Like</h2>
+            <div class="vehicles-grid">
+                <% similarVehicles.forEach(v => { %>
+                <a href="/vehicles/<%= v.id %>" class="vehicle-card">
+                    <div class="vehicle-card-img">
+                        <img src="<%= v.primary_image ? (v.primary_image.startsWith('http') ? v.primary_image : '/uploads/vehicles/' + v.primary_image) : '/images/no-vehicle.jpg' %>"
+                            alt="<%= v.title %>" loading="lazy" onerror="this.src='/images/no-vehicle.jpg'">
+                        <div class="vehicle-card-category"><%= v.category_name %></div>
+                    </div>
+                    <div class="vehicle-card-body">
+                        <h3 class="vehicle-title"><%= v.title %></h3>
+                        <div class="vehicle-price">₹ <%= Number(v.price).toLocaleString('en-IN') %></div>
+                        <div class="vehicle-meta">
+                            <span><i class="fas fa-road"></i> <%= v.kilometers ? v.kilometers.toLocaleString('en-IN') + ' km' : 'N/A' %></span>
+                            <span><i class="fas fa-calendar-alt"></i> <%= v.manufacturing_year %></span>
+                        </div>
+                        <div class="vehicle-location"><i class="fas fa-map-marker-alt"></i> <%= v.registration_city || 'India' %></div>
+                    </div>
+                </a>
+                <% }) %>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<!-- ==============================================
+     MODALS (ALWAYS RENDERED IN DOM)
+     ============================================== -->
+
+<!-- 1. Message Seller Modal -->
+<div class="modal-overlay" id="messageModal" style="display:none">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fas fa-comment-dots"></i> Message <%= vehicle.seller_first_name %></h3>
+            <button type="button" class="modal-close" onclick="closeModal('messageModal')">&times;</button>
+        </div>
+        <% if (!user) { %>
+        <div style="padding:16px 0;text-align:center;">
+            <p style="margin-bottom:16px;">Please log in to your VehicleHub account to chat directly with the seller.</p>
+            <a href="/login?redirect=/vehicles/<%= vehicle.id %>" class="btn btn-primary btn-block">
+                <i class="fas fa-sign-in-alt"></i> Log In to Message Seller
+            </a>
+            <p class="text-muted mt-12" style="font-size:12px;">Don't have an account? <a href="/register">Register Free</a></p>
+        </div>
+        <% } else if (user.id === vehicle.seller_id) { %>
+        <div style="padding:16px 0;text-align:center;">
+            <p>You cannot send a message to yourself on your own vehicle listing.</p>
+            <a href="/vehicles/edit/<%= vehicle.id %>" class="btn btn-primary mt-12">Edit Listing</a>
+        </div>
+        <% } else { %>
+        <form action="/messages/start" method="POST">
+            <input type="hidden" name="vehicle_id" value="<%= vehicle.id %>">
+            <div class="form-group">
+                <label>Your Message to <%= vehicle.seller_first_name %></label>
+                <textarea name="message" class="form-control" rows="4" placeholder="Hi <%= vehicle.seller_first_name %>, I am interested in your <%= vehicle.title %>. Is it still available for inspection?" required>Hi <%= vehicle.seller_first_name %>, I am interested in your <%= vehicle.title %>. Is it still available for inspection?</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-paper-plane"></i> Send Message Now
+            </button>
+        </form>
+        <% } %>
+    </div>
+</div>
+
+<!-- 2. Review Seller Modal -->
+<div class="modal-overlay" id="reviewModal" style="display:none">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fas fa-star" style="color:#f59e0b"></i> Review Seller: <%= vehicle.seller_first_name %></h3>
+            <button type="button" class="modal-close" onclick="closeModal('reviewModal')">&times;</button>
+        </div>
+        <% if (!user) { %>
+        <div style="padding:16px 0;text-align:center;">
+            <p style="margin-bottom:16px;">Please log in to rate and review this seller.</p>
+            <a href="/login?redirect=/vehicles/<%= vehicle.id %>" class="btn btn-primary btn-block">
+                <i class="fas fa-sign-in-alt"></i> Log In to Submit Review
+            </a>
+        </div>
+        <% } else if (user.id === vehicle.seller_id) { %>
+        <div style="padding:16px 0;text-align:center;">
+            <p>You cannot submit a review for your own listing.</p>
+        </div>
+        <% } else { %>
+        <form action="/reviews/add" method="POST">
+            <input type="hidden" name="seller_id" value="<%= vehicle.seller_id %>">
+            <input type="hidden" name="vehicle_id" value="<%= vehicle.id %>">
+            <div class="form-group">
+                <label>Select Rating (1 to 5 Stars) *</label>
+                <div class="star-rating-input" id="starRatingInput">
+                    <input type="radio" name="rating" id="star5" value="5" required><label for="star5" title="5 stars"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="rating" id="star4" value="4"><label for="star4" title="4 stars"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="rating" id="star3" value="3"><label for="star3" title="3 stars"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="rating" id="star2" value="2"><label for="star2" title="2 stars"><i class="fas fa-star"></i></label>
+                    <input type="radio" name="rating" id="star1" value="1"><label for="star1" title="1 star"><i class="fas fa-star"></i></label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Your Feedback (optional)</label>
+                <textarea name="comment" class="form-control" rows="3" placeholder="Describe your experience with <%= vehicle.seller_first_name %>..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-check"></i> Submit Rating & Review
+            </button>
+        </form>
+        <% } %>
+    </div>
+</div>
+
+<!-- 3. Report Listing Modal -->
+<div class="modal-overlay" id="reportModal" style="display:none">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3><i class="fas fa-flag" style="color:#dc2626"></i> Report this Listing</h3>
+            <button type="button" class="modal-close" onclick="closeModal('reportModal')">&times;</button>
+        </div>
+
+        <div id="reportSuccessBox" style="display:none;padding:24px 16px;text-align:center;">
+            <div style="font-size:48px;color:#16a34a;margin-bottom:12px;"><i class="fas fa-check-circle"></i></div>
+            <h4 style="font-size:18px;font-weight:700;margin-bottom:8px;">Report Submitted</h4>
+            <p style="color:var(--text-muted);font-size:13px;margin-bottom:20px;">Thank you. Our trust & safety team has received your report and will review this listing shortly.</p>
+            <button type="button" class="btn btn-primary" onclick="closeModal('reportModal')">Done</button>
+        </div>
+
+        <form action="/reports/submit" method="POST" id="reportFormElement">
+            <input type="hidden" name="vehicle_id" value="<%= vehicle.id %>">
+
+            <% if (user && user.id === vehicle.seller_id) { %>
+            <div style="background:#fef3c7;color:#92400e;padding:10px 12px;border-radius:6px;font-size:12px;margin-bottom:14px;">
+                <i class="fas fa-info-circle"></i> <strong>Seller Testing Notice:</strong> You are testing on your own listing. Submitting will register a report in the moderation queue for testing.
+            </div>
+            <% } %>
+
+            <div class="form-group">
+                <label for="reportReason">Reason for Report *</label>
+                <select name="reason" id="reportReason" class="form-control" required>
+                    <option value="">Select a reason</option>
+                    <option value="Fraud or Scam Listing">Fraud or Scam Listing</option>
+                    <option value="Fake Vehicle / Misleading Information">Fake Vehicle / Misleading Information</option>
+                    <option value="Incorrect Price Advertised">Incorrect Price Advertised</option>
+                    <option value="Suspected Stolen Vehicle">Suspected Stolen Vehicle</option>
+                    <option value="Vehicle Already Sold">Vehicle Already Sold</option>
+                    <option value="Duplicate Listing">Duplicate Listing</option>
+                    <option value="Inappropriate Content or Photos">Inappropriate Content or Photos</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <% if (!user) { %>
+            <div class="form-group">
+                <label for="reportContact">Your Email or Mobile Number (Optional)</label>
+                <input type="text" name="contact" id="reportContact" class="form-control" placeholder="e.g. name@example.com or 9876543210">
+                <small class="text-muted" style="font-size:11px;display:block;margin-top:2px;">
+                    Optional contact if you'd like follow-up updates from our moderation team.
+                </small>
+            </div>
+            <% } %>
+
+            <div class="form-group">
+                <label for="reportDescription">Details & Explanation *</label>
+                <textarea name="description" id="reportDescription" class="form-control" rows="3" required placeholder="Please describe the issue (minimum 5 characters)" minlength="5"></textarea>
+            </div>
+
+            <div id="reportErrorBox" style="display:none;background:#fee2e2;color:#991b1b;padding:8px 12px;border-radius:6px;font-size:12px;margin-bottom:12px;"></div>
+
+            <button type="submit" class="btn btn-danger btn-block" id="reportSubmitBtn">
+                <i class="fas fa-paper-plane"></i> Submit Report to Moderators
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+// Modal Helpers
+function openModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'flex';
+}
+function closeModal(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+    if (id === 'reportModal') {
+        const form = document.getElementById('reportFormElement');
+        const succ = document.getElementById('reportSuccessBox');
+        const btn = document.getElementById('reportSubmitBtn');
+        const errBox = document.getElementById('reportErrorBox');
+        if (form) { form.reset(); form.style.display = 'block'; }
+        if (succ) succ.style.display = 'none';
+        if (errBox) errBox.style.display = 'none';
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Report to Moderators'; }
+    }
+}
+
+// Close modals on clicking backdrop or ESC key
+document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', function(e) {
+        if (e.target === this) closeModal(this.id);
+    });
+});
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.modal-overlay').forEach(m => closeModal(m.id));
+    }
+});
+
+// Interactive Report Form Submission (AJAX with graceful fallback)
+const reportForm = document.getElementById('reportFormElement');
+if (reportForm) {
+    reportForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('reportSubmitBtn');
+        const errBox = document.getElementById('reportErrorBox');
+        if (errBox) errBox.style.display = 'none';
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting Report...';
+        }
+
+        const formData = new FormData(this);
+        const payload = {
+            vehicle_id: formData.get('vehicle_id'),
+            reason: formData.get('reason'),
+            description: formData.get('description'),
+            contact: formData.get('contact') || ''
+        };
+
+        try {
+            const res = await fetch('/reports/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (data.success) {
+                reportForm.style.display = 'none';
+                const succ = document.getElementById('reportSuccessBox');
+                if (succ) succ.style.display = 'block';
+            } else {
+                if (errBox) {
+                    errBox.textContent = data.message || 'Failed to submit report.';
+                    errBox.style.display = 'block';
+                }
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-paper-plane"></i> Submit Report to Moderators';
+                }
+            }
+        } catch (err) {
+            this.submit();
+        }
+    });
+}
+
+// Image Gallery
+const images = <%- JSON.stringify(images.map(i => (i && i.image && i.image.startsWith('http')) ? i.image : '/uploads/vehicles/' + (i && i.image ? i.image : 'no-vehicle.jpg'))) %>;
+let currentIndex = 0;
+function setMainImage(src, idx) {
+    const main = document.getElementById('mainImage');
+    if (main) main.src = src;
+    currentIndex = idx;
+    const counter = document.getElementById('imgIndex');
+    if (counter) counter.textContent = idx + 1;
+    document.querySelectorAll('.thumbnail').forEach((t, i) => t.classList.toggle('active', i === idx));
+}
+const prevBtn = document.getElementById('prevImg');
+const nextBtn = document.getElementById('nextImg');
+if (prevBtn && images.length > 0) {
+    prevBtn.onclick = () => setMainImage(images[(currentIndex - 1 + images.length) % images.length], (currentIndex - 1 + images.length) % images.length);
+}
+if (nextBtn && images.length > 0) {
+    nextBtn.onclick = () => setMainImage(images[(currentIndex + 1) % images.length], (currentIndex + 1) % images.length);
+}
+</script>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,113 @@
+<%- include('../partials/header', {title: 'Manage Users'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="admin-page">
+    <div class="container">
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-users"></i> User Management</h1>
+                <p>Total Registered Users: <%= totalUsers %></p>
+            </div>
+            <a href="/admin" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        </div>
+
+        <!-- Filter Bar -->
+        <form action="/admin/users" method="GET" class="admin-filter-bar">
+            <input type="text" name="search" class="form-control" placeholder="Search by name, email, phone..." value="<%= filters.search || '' %>">
+            <select name="role" class="form-control" style="max-width:140px">
+                <option value="">All Roles</option>
+                <option value="USER" <%= filters.role === 'USER' ? 'selected' : '' %>>User</option>
+                <option value="ADMIN" <%= filters.role === 'ADMIN' ? 'selected' : '' %>>Admin</option>
+            </select>
+            <select name="suspended" class="form-control" style="max-width:160px">
+                <option value="">All Statuses</option>
+                <option value="0" <%= filters.suspended === '0' ? 'selected' : '' %>>Active Only</option>
+                <option value="1" <%= filters.suspended === '1' ? 'selected' : '' %>>Suspended Only</option>
+            </select>
+            <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+            <a href="/admin/users" class="btn btn-outline">Reset</a>
+        </form>
+
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Mobile</th>
+                        <th>City</th>
+                        <th>Role</th>
+                        <th>Listings</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% users.forEach(u => { %>
+                    <tr>
+                        <td><%= u.id %></td>
+                        <td>
+                            <strong><%= u.first_name %> <%= u.last_name %></strong>
+                            <div class="text-muted"><%= u.email %></div>
+                        </td>
+                        <td>+91 <%= u.phone %></td>
+                        <td><%= u.city || '—' %></td>
+                        <td><span class="role-badge <%= u.role === 'ADMIN' ? 'admin-badge' : '' %>"><%= u.role %></span></td>
+                        <td><%= u.listings_count %></td>
+                        <td>
+                            <% if (u.is_suspended) { %>
+                            <span class="status-badge status-rejected">Suspended</span>
+                            <% } else { %>
+                            <span class="status-badge status-active">Active</span>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (u.role !== 'ADMIN') { %>
+                            <% if (u.is_suspended) { %>
+                            <form action="/admin/users/unsuspend" method="POST" style="display:inline">
+                                <input type="hidden" name="user_id" value="<%= u.id %>">
+                                <button type="submit" class="btn btn-sm btn-outline"><i class="fas fa-undo"></i> Unsuspend</button>
+                            </form>
+                            <% } else { %>
+                            <button class="btn btn-sm btn-danger" onclick="openSuspendModal('<%= u.id %>', '<%= u.first_name %>')"><i class="fas fa-ban"></i> Suspend</button>
+                            <% } %>
+                            <% } else { %>
+                            <span class="text-muted">Protected</span>
+                            <% } %>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Suspend Modal -->
+<div class="modal-overlay" id="suspendModal" style="display:none">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Suspend User Account</h3>
+            <button class="modal-close" onclick="document.getElementById('suspendModal').style.display='none'">&times;</button>
+        </div>
+        <form action="/admin/users/suspend" method="POST">
+            <input type="hidden" name="user_id" id="suspendUserId">
+            <p>You are about to suspend <strong id="suspendUserName"></strong>. This user will not be able to log in or post vehicles.</p>
+            <div class="form-group mt-16">
+                <label>Reason for Suspension</label>
+                <textarea name="reason" class="form-control" rows="3" required placeholder="Describe violation of marketplace rules..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-danger btn-block">Confirm Suspension</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function openSuspendModal(id, name) {
+    document.getElementById('suspendUserId').value = id;
+    document.getElementById('suspendUserName').textContent = name;
+    document.getElementById('suspendModal').style.display = 'flex';
+}
+</script>
+
+<%- include('../partials/footer') %>

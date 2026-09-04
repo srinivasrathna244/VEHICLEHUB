@@ -1,0 +1,105 @@
+<%- include('../partials/header', {title: 'Admin Dashboard'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="admin-page">
+    <div class="container">
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-shield-alt"></i> Administration Center</h1>
+                <p>Monitor platform statistics, moderate listings, users, and review fraud reports.</p>
+            </div>
+            <div class="admin-nav-links">
+                <a href="/admin/vehicles" class="btn btn-outline"><i class="fas fa-car"></i> Vehicles</a>
+                <a href="/admin/users" class="btn btn-outline"><i class="fas fa-users"></i> Users</a>
+                <a href="/admin/reports" class="btn btn-outline"><i class="fas fa-flag"></i> Reports (<%= stats.pendingReports %>)</a>
+                <a href="/admin/categories" class="btn btn-outline"><i class="fas fa-th"></i> Categories</a>
+                <a href="/admin/audit-logs" class="btn btn-outline"><i class="fas fa-history"></i> Audit Logs</a>
+                <a href="/admin/market-importer" class="btn btn-primary"><i class="fas fa-cloud-download-alt"></i> Market Importer</a>
+            </div>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+                <div class="a-stat-icon" style="background:#eff6ff;color:#2563eb"><i class="fas fa-users"></i></div>
+                <div class="a-stat-info">
+                    <div class="a-stat-val"><%= stats.totalUsers %></div>
+                    <div class="a-stat-lbl">Total Users</div>
+                    <small><%= stats.suspendedUsers %> suspended</small>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="a-stat-icon" style="background:#f0fdf4;color:#16a34a"><i class="fas fa-car"></i></div>
+                <div class="a-stat-info">
+                    <div class="a-stat-val"><%= stats.activeVehicles %></div>
+                    <div class="a-stat-lbl">Active Listings</div>
+                    <small><%= stats.soldVehicles %> sold &bull; <%= stats.pendingVehicles %> pending</small>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="a-stat-icon" style="background:#fef2f2;color:#dc2626"><i class="fas fa-flag"></i></div>
+                <div class="a-stat-info">
+                    <div class="a-stat-val"><%= stats.pendingReports %></div>
+                    <div class="a-stat-lbl">Pending Reports</div>
+                    <small><%= stats.totalReports %> total filed</small>
+                </div>
+            </div>
+            <div class="admin-stat-card">
+                <div class="a-stat-icon" style="background:#fdf4ff;color:#9333ea"><i class="fas fa-comments"></i></div>
+                <div class="a-stat-info">
+                    <div class="a-stat-val"><%= stats.totalMessages %></div>
+                    <div class="a-stat-lbl">Messages Sent</div>
+                    <small>Direct buyer-seller chats</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-grid-columns">
+            <!-- Pending Reports Queue -->
+            <div class="admin-card">
+                <div class="section-header-inline">
+                    <h3><i class="fas fa-exclamation-triangle" style="color:#ef4444"></i> Reports Awaiting Review</h3>
+                    <a href="/admin/reports" class="btn-link">View All</a>
+                </div>
+                <% if (recentReports.length === 0) { %>
+                <div class="empty-state"><p>No pending reports. All clear!</p></div>
+                <% } else { %>
+                <div class="admin-list-mini">
+                    <% recentReports.forEach(r => { %>
+                    <div class="admin-mini-item">
+                        <div>
+                            <div class="admin-mini-title"><strong><%= r.reason %></strong> &bull; <%= r.vehicle_title %></div>
+                            <div class="admin-mini-sub">Reported by <%= r.reporter_name %>: "<%= r.description %>"</div>
+                        </div>
+                        <a href="/admin/reports" class="btn btn-sm btn-outline">Review</a>
+                    </div>
+                    <% }) %>
+                </div>
+                <% } %>
+            </div>
+
+            <!-- Recent Registered Users -->
+            <div class="admin-card">
+                <div class="section-header-inline">
+                    <h3><i class="fas fa-user-plus" style="color:#2563eb"></i> Recent Registrations</h3>
+                    <a href="/admin/users" class="btn-link">View All</a>
+                </div>
+                <div class="admin-list-mini">
+                    <% recentUsers.forEach(u => { %>
+                    <div class="admin-mini-item">
+                        <div>
+                            <div class="admin-mini-title"><%= u.first_name %> <%= u.last_name %> <span class="role-badge"><%= u.role %></span></div>
+                            <div class="admin-mini-sub"><%= u.email %> &bull; Joined <%= new Date(u.created_at).toLocaleDateString('en-IN') %></div>
+                        </div>
+                        <% if (u.is_suspended) { %>
+                        <span class="status-badge status-rejected">Suspended</span>
+                        <% } %>
+                    </div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,218 @@
+<%- include('../partials/header', {title: title}) %>
+<%- include('../partials/navbar') %>
+
+<div class="vehicles-page">
+    <div class="vehicles-layout">
+        <!-- Sidebar Filters -->
+        <aside class="filter-sidebar" id="filterSidebar">
+            <div class="filter-header">
+                <h3><i class="fas fa-filter"></i> Filters</h3>
+                <button class="close-sidebar" id="closeSidebar"><i class="fas fa-times"></i></button>
+            </div>
+
+            <form action="/vehicles" method="GET" id="filterForm">
+                <% if (filters.search) { %><input type="hidden" name="search" value="<%= filters.search %>"><% } %>
+
+                <div class="filter-group">
+                    <label>Category</label>
+                    <select name="category" class="form-control filter-select" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        <% categories.forEach(cat => { %>
+                        <option value="<%= cat.slug %>" <%= (filters.category === cat.slug) ? 'selected' : '' %>><%= cat.name %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Brand</label>
+                    <select name="brand" class="form-control filter-select">
+                        <option value="">All Brands</option>
+                        <% brands.forEach(b => { %>
+                        <option value="<%= b %>" <%= (filters.brand === b) ? 'selected' : '' %>><%= b %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>City</label>
+                    <input type="text" name="city" class="form-control" placeholder="Any city" value="<%= filters.city || '' %>">
+                </div>
+
+                <div class="filter-group">
+                    <label>Price Range (₹)</label>
+                    <div class="range-row">
+                        <input type="number" name="min_price" class="form-control" placeholder="Min" value="<%= filters.min_price || '' %>">
+                        <span>—</span>
+                        <input type="number" name="max_price" class="form-control" placeholder="Max" value="<%= filters.max_price || '' %>">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Kilometers</label>
+                    <div class="range-row">
+                        <input type="number" name="min_km" class="form-control" placeholder="Min KM" value="<%= filters.min_km || '' %>">
+                        <span>—</span>
+                        <input type="number" name="max_km" class="form-control" placeholder="Max KM" value="<%= filters.max_km || '' %>">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label>Fuel Type</label>
+                    <select name="fuel_type" class="form-control filter-select">
+                        <option value="">Any Fuel</option>
+                        <% fuelTypes.forEach(f => { %>
+                        <option value="<%= f %>" <%= (filters.fuel_type === f) ? 'selected' : '' %>><%= f %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Transmission</label>
+                    <select name="transmission" class="form-control filter-select">
+                        <option value="">Any Transmission</option>
+                        <% transmissions.forEach(t => { %>
+                        <option value="<%= t %>" <%= (filters.transmission === t) ? 'selected' : '' %>><%= t %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Ownership</label>
+                    <select name="ownership_type" class="form-control filter-select">
+                        <option value="">Any Ownership</option>
+                        <% ownershipTypes.forEach(o => { %>
+                        <option value="<%= o %>" <%= (filters.ownership_type === o) ? 'selected' : '' %>><%= o %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Condition</label>
+                    <select name="condition_rating" class="form-control filter-select">
+                        <option value="">Any Condition</option>
+                        <% conditions.forEach(c => { %>
+                        <option value="<%= c %>" <%= (filters.condition_rating === c) ? 'selected' : '' %>><%= c %></option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Min Year</label>
+                    <input type="number" name="year_min" class="form-control" placeholder="e.g. 2015" value="<%= filters.year_min || '' %>">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">Apply Filters</button>
+                <a href="/vehicles" class="btn btn-outline btn-block mt-8">Clear All</a>
+            </form>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="vehicles-main">
+            <!-- Top Bar -->
+            <div class="vehicles-topbar">
+                <div class="topbar-left">
+                    <button class="btn-filter-toggle" id="filterToggle">
+                        <i class="fas fa-filter"></i> Filters
+                    </button>
+                    <form action="/vehicles" method="GET" class="search-bar-inline">
+                        <% Object.entries(filters).filter(([k]) => k !== 'search' && k !== 'sort' && k !== 'page').forEach(([k, v]) => { %>
+                        <input type="hidden" name="<%= k %>" value="<%= v %>">
+                        <% }) %>
+                        <div class="search-inline-wrap">
+                            <input type="text" name="search" placeholder="Search brand, model, city..." value="<%= filters.search || '' %>">
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                    <p class="results-count"><strong><%= totalVehicles %></strong> vehicles found</p>
+                </div>
+                <div class="topbar-right">
+                    <form action="/vehicles" method="GET" id="sortForm">
+                        <% Object.entries(filters).filter(([k]) => k !== 'sort' && k !== 'page').forEach(([k, v]) => { %>
+                        <input type="hidden" name="<%= k %>" value="<%= v %>">
+                        <% }) %>
+                        <select name="sort" class="form-control sort-select" onchange="this.form.submit()">
+                            <option value="newest" <%= sort === 'newest' ? 'selected' : '' %>>Newest First</option>
+                            <option value="oldest" <%= sort === 'oldest' ? 'selected' : '' %>>Oldest First</option>
+                            <option value="price_asc" <%= sort === 'price_asc' ? 'selected' : '' %>>Price: Low to High</option>
+                            <option value="price_desc" <%= sort === 'price_desc' ? 'selected' : '' %>>Price: High to Low</option>
+                            <option value="km_asc" <%= sort === 'km_asc' ? 'selected' : '' %>>KM: Low to High</option>
+                            <option value="km_desc" <%= sort === 'km_desc' ? 'selected' : '' %>>KM: High to Low</option>
+                            <option value="year_desc" <%= sort === 'year_desc' ? 'selected' : '' %>>Newest Model</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Vehicle Grid -->
+            <% if (vehicles.length === 0) { %>
+            <div class="empty-state-large">
+                <i class="fas fa-car-side"></i>
+                <h3>No vehicles found</h3>
+                <p>Try adjusting your search filters or <a href="/vehicles">clear all filters</a>.</p>
+            </div>
+            <% } else { %>
+            <div class="vehicles-grid">
+                <% vehicles.forEach(v => { %>
+                <a href="/vehicles/<%= v.id %>" class="vehicle-card">
+                    <div class="vehicle-card-img">
+                        <img src="<%= v.primary_image ? (v.primary_image.startsWith('http') ? v.primary_image : '/uploads/vehicles/' + v.primary_image) : '/images/no-vehicle.jpg' %>"
+                            alt="<%= v.title %>" loading="lazy"
+                            onerror="this.src='/images/no-vehicle.jpg'">
+                        <div class="vehicle-card-category"><%= v.category_name %></div>
+                        <% if (user) { %>
+                        <form action="/favorites/toggle/<%= v.id %>" method="POST" class="fav-form">
+                            <button type="submit" class="fav-btn <%= userFavoriteIds.includes(v.id) ? 'favorited' : '' %>" title="Save to Favorites" onclick="event.preventDefault(); event.stopPropagation(); this.closest('form').submit();">
+                                <i class="<%= userFavoriteIds.includes(v.id) ? 'fas' : 'far' %> fa-heart"></i>
+                            </button>
+                        </form>
+                        <% } else { %>
+                        <a href="/favorites/toggle/<%= v.id %>" class="fav-btn fav-form" title="Save to Favorites" onclick="event.stopPropagation();">
+                            <i class="far fa-heart"></i>
+                        </a>
+                        <% } %>
+                    </div>
+                    <div class="vehicle-card-body">
+                        <h3 class="vehicle-title"><%= v.title %></h3>
+                        <div class="vehicle-price">₹ <%= Number(v.price).toLocaleString('en-IN') %></div>
+                        <div class="vehicle-meta">
+                            <span><i class="fas fa-road"></i> <%= v.kilometers ? v.kilometers.toLocaleString('en-IN') + ' km' : 'N/A' %></span>
+                            <span><i class="fas fa-calendar-alt"></i> <%= v.manufacturing_year %></span>
+                            <span><i class="fas fa-gas-pump"></i> <%= v.fuel_type %></span>
+                        </div>
+                        <div class="vehicle-footer">
+                            <span class="vehicle-location"><i class="fas fa-map-marker-alt"></i> <%= v.registration_city || 'India' %></span>
+                            <span class="vehicle-seller"><i class="fas fa-user"></i> <%= v.seller_first_name %></span>
+                        </div>
+                    </div>
+                </a>
+                <% }) %>
+            </div>
+            <% } %>
+
+            <!-- Pagination -->
+            <% if (totalPages > 1) { %>
+            <div class="pagination">
+                <% const buildPageUrl = (p) => {
+                    const q = Object.assign({}, filters, { sort, page: p });
+                    return '/vehicles?' + Object.entries(q).filter(([,v]) => v).map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+                }; %>
+
+                <% if (currentPage > 1) { %>
+                <a href="<%= buildPageUrl(currentPage - 1) %>" class="page-btn"><i class="fas fa-chevron-left"></i></a>
+                <% } %>
+
+                <% for (let p = Math.max(1, currentPage - 2); p <= Math.min(totalPages, currentPage + 2); p++) { %>
+                <a href="<%= buildPageUrl(p) %>" class="page-btn <%= p === currentPage ? 'active' : '' %>"><%= p %></a>
+                <% } %>
+
+                <% if (currentPage < totalPages) { %>
+                <a href="<%= buildPageUrl(currentPage + 1) %>" class="page-btn"><i class="fas fa-chevron-right"></i></a>
+                <% } %>
+            </div>
+            <% } %>
+        </main>
+    </div>
+</div>
+
+<script src="/js/vehicles.js"></script>
+<%- include('../partials/footer') %>

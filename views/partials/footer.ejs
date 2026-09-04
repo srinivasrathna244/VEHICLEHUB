@@ -1,26 +1,63 @@
-<footer>
-
+<footer class="site-footer">
     <div class="footer-container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo"><i class="fas fa-car-side"></i> Vehicle<strong>Hub</strong></a>
+                <p>India's trusted multi-vehicle marketplace. Buy and sell bikes, cars, trucks, tractors and all types of vehicles — safely and securely.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
 
-        <h2>BikeHub</h2>
+            <div class="footer-links">
+                <h4>Browse Vehicles</h4>
+                <ul>
+                    <% categories.slice(0,6).forEach(cat => { %>
+                    <li><a href="/vehicles?category=<%= cat.slug %>"><%= cat.name %></a></li>
+                    <% }) %>
+                </ul>
+            </div>
 
-        <p>
-            Buy and Sell Used Bikes Easily.
-        </p>
+            <div class="footer-links">
+                <h4>My Account</h4>
+                <ul>
+                    <% if (user) { %>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/my-listings">My Listings</a></li>
+                    <li><a href="/favorites">Favorites</a></li>
+                    <li><a href="/messages">Messages</a></li>
+                    <li><a href="/profile">My Profile</a></li>
+                    <li><a href="/logout">Logout</a></li>
+                    <% } else { %>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/register">Register</a></li>
+                    <% } %>
+                </ul>
+            </div>
 
-        <p>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="/vehicles/sell">Sell Your Vehicle</a></li>
+                    <li><a href="/vehicles">Browse All Vehicles</a></li>
+                </ul>
+                <div class="footer-disclaimer">
+                    <i class="fas fa-shield-alt"></i>
+                    <small>Vehicle information is seller-provided unless verified through an authorized source. VehicleHub does not independently verify all listings.</small>
+                </div>
+            </div>
+        </div>
 
-            © 2026 BikeHub.
-
-            All Rights Reserved.
-
-        </p>
-
+        <div class="footer-bottom">
+            <p>&copy; <%= new Date().getFullYear() %> VehicleHub. All Rights Reserved. | Built for India's Vehicle Marketplace.</p>
+        </div>
     </div>
-
 </footer>
 
-<script src="/js/home.js"></script>
-
+<script src="/js/main.js"></script>
+<%- typeof pageJS !== 'undefined' ? `<script src="/js/${pageJS}.js"></script>` : '' %>
 </body>
 </html>

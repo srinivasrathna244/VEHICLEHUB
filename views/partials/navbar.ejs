@@ -1,69 +1,88 @@
-<header>
+<nav class="navbar" id="mainNav">
+    <div class="nav-container">
+        <a href="/" class="navbar-brand">
+            <i class="fas fa-car-side"></i>
+            <span>Vehicle<strong>Hub</strong></span>
+        </a>
 
-<nav class="navbar">
+        <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+            <span></span><span></span><span></span>
+        </button>
 
-<div class="logo">
+        <div class="nav-links" id="navLinks">
+            <a href="/" class="nav-link <%= currentPath === '/' ? 'active' : '' %>">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="/vehicles" class="nav-link <%= currentPath.startsWith('/vehicles') ? 'active' : '' %>">
+                <i class="fas fa-search"></i> Browse
+            </a>
 
-<a href="/">BikeHub</a>
+            <div class="nav-dropdown">
+                <a href="#" class="nav-link dropdown-toggle">
+                    <i class="fas fa-th"></i> Categories <i class="fas fa-chevron-down fa-xs"></i>
+                </a>
+                <div class="dropdown-menu">
+                    <% categories.forEach(cat => { %>
+                    <a href="/vehicles?category=<%= cat.slug %>" class="dropdown-item">
+                        <i class="fas <%= cat.icon %>"></i> <%= cat.name %>
+                    </a>
+                    <% }) %>
+                </div>
+            </div>
 
-</div>
-
-<ul class="nav-links">
-
-<li><a href="/">Home</a></li>
-
-<li><a href="/bikes">Bikes</a></li>
-
-<li><a href="/sell-bike">Sell Bike</a></li>
-
-<% if(user){ %>
-
-<li>
-
-<a href="/profile">
-
-<%= user.first_name %>
-
-</a>
-
-</li>
-
-<li>
-
-<a href="/logout">
-
-Logout
-
-</a>
-
-</li>
-
-<% } else { %>
-
-<li>
-
-<a href="/login">
-
-Login
-
-</a>
-
-</li>
-
-<li>
-
-<a href="/register">
-
-Register
-
-</a>
-
-</li>
-
-<% } %>
-
-</ul>
-
+            <% if (user) { %>
+            <a href="/vehicles/sell" class="nav-link sell-btn">
+                <i class="fas fa-plus-circle"></i> Sell Vehicle
+            </a>
+            <a href="/favorites" class="nav-link <%= currentPath === '/favorites' ? 'active' : '' %>">
+                <i class="fas fa-heart"></i> Favorites
+            </a>
+            <a href="/messages" class="nav-link <%= currentPath.startsWith('/messages') ? 'active' : '' %>">
+                <i class="fas fa-comment-dots"></i> Messages
+                <% if (unreadMessagesCount > 0) { %><span class="badge-count"><%= unreadMessagesCount %></span><% } %>
+            </a>
+            <% if (user.role === 'ADMIN') { %>
+            <a href="/admin" class="nav-link admin-link">
+                <i class="fas fa-shield-alt"></i> Admin
+            </a>
+            <% } %>
+            <div class="nav-dropdown">
+                <a href="#" class="nav-link dropdown-toggle user-menu">
+                    <img src="/uploads/avatars/<%= user.profile_photo || 'default-avatar.png' %>" alt="<%= user.first_name %>" class="nav-avatar" onerror="this.src='/images/default-avatar.png'">
+                    <%= user.first_name %>
+                    <% if (unreadNotificationsCount > 0) { %><span class="badge-count notif-badge"><%= unreadNotificationsCount %></span><% } %>
+                </a>
+                <div class="dropdown-menu dropdown-right">
+                    <a href="/dashboard" class="dropdown-item"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    <a href="/my-listings" class="dropdown-item"><i class="fas fa-list"></i> My Listings</a>
+                    <a href="/profile" class="dropdown-item"><i class="fas fa-user"></i> My Profile</a>
+                    <a href="/notifications" class="dropdown-item">
+                        <i class="fas fa-bell"></i> Notifications
+                        <% if (unreadNotificationsCount > 0) { %><span class="badge-pill"><%= unreadNotificationsCount %></span><% } %>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="/logout" class="dropdown-item text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
+            </div>
+            <% } else { %>
+            <a href="/login" class="nav-link btn-nav-outline">Login</a>
+            <a href="/register" class="nav-link btn-nav-primary">Register Free</a>
+            <% } %>
+        </div>
+    </div>
 </nav>
 
-</header>
+<div class="flash-container">
+    <% if (success_msg && success_msg.length > 0) { %>
+        <div class="alert alert-success"><i class="fas fa-check-circle"></i> <%= success_msg %></div>
+    <% } %>
+    <% if (error_msg && error_msg.length > 0) { %>
+        <div class="alert alert-error"><i class="fas fa-exclamation-circle"></i> <%= error_msg %></div>
+    <% } %>
+    <% if (warning_msg && warning_msg.length > 0) { %>
+        <div class="alert alert-warning"><i class="fas fa-exclamation-triangle"></i> <%= warning_msg %></div>
+    <% } %>
+    <% if (info_msg && info_msg.length > 0) { %>
+        <div class="alert alert-info"><i class="fas fa-info-circle"></i> <%= info_msg %></div>
+    <% } %>
+</div>

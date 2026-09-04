@@ -1,0 +1,143 @@
+<%- include('../partials/header', {title: 'Dashboard'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="dashboard-page">
+    <div class="container">
+        <!-- Welcome Banner -->
+        <div class="dashboard-welcome">
+            <div class="welcome-text">
+                <h1>Welcome back, <%= user.first_name %>! 👋</h1>
+                <p>Here's what's happening with your VehicleHub account today.</p>
+            </div>
+            <div class="welcome-actions">
+                <a href="/vehicles/sell" class="btn btn-primary"><i class="fas fa-plus-circle"></i> Sell Vehicle</a>
+                <a href="/vehicles" class="btn btn-outline"><i class="fas fa-search"></i> Browse</a>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="dashboard-stats">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#dbeafe"><i class="fas fa-list" style="color:#2563eb"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value"><%= stats.activeListings %></div>
+                    <div class="stat-label">Active Listings</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#dcfce7"><i class="fas fa-check-circle" style="color:#16a34a"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value"><%= stats.soldListings %></div>
+                    <div class="stat-label">Vehicles Sold</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#fef9c3"><i class="fas fa-heart" style="color:#d97706"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value"><%= stats.favorites %></div>
+                    <div class="stat-label">Saved Vehicles</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#fce7f3"><i class="fas fa-comment-dots" style="color:#db2777"></i></div>
+                <div class="stat-info">
+                    <div class="stat-value"><%= unreadMessagesCount || 0 %></div>
+                    <div class="stat-label">Unread Messages</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Navigation -->
+        <div class="dashboard-quicknav">
+            <h3>Quick Actions</h3>
+            <div class="quicknav-grid">
+                <a href="/vehicles/sell" class="quicknav-card">
+                    <i class="fas fa-plus-circle"></i><span>Sell Vehicle</span>
+                </a>
+                <a href="/my-listings" class="quicknav-card">
+                    <i class="fas fa-list-alt"></i><span>My Listings</span>
+                </a>
+                <a href="/favorites" class="quicknav-card">
+                    <i class="fas fa-heart"></i><span>Favorites</span>
+                </a>
+                <a href="/messages" class="quicknav-card">
+                    <i class="fas fa-envelope"></i><span>Messages</span>
+                    <% if (unreadMessagesCount > 0) { %><span class="badge-count"><%= unreadMessagesCount %></span><% } %>
+                </a>
+                <a href="/profile" class="quicknav-card">
+                    <i class="fas fa-user"></i><span>Profile</span>
+                </a>
+                <a href="/notifications" class="quicknav-card">
+                    <i class="fas fa-bell"></i><span>Notifications</span>
+                    <% if (unreadNotificationsCount > 0) { %><span class="badge-count"><%= unreadNotificationsCount %></span><% } %>
+                </a>
+                <a href="/vehicles" class="quicknav-card">
+                    <i class="fas fa-search"></i><span>Browse Vehicles</span>
+                </a>
+                <a href="/profile/change-password" class="quicknav-card">
+                    <i class="fas fa-key"></i><span>Change Password</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="dashboard-columns">
+            <!-- My Recent Listings -->
+            <div class="dashboard-section">
+                <div class="section-header-inline">
+                    <h3>My Recent Listings</h3>
+                    <a href="/my-listings" class="btn-link">View All</a>
+                </div>
+                <% if (recentMyListings && recentMyListings.length > 0) { %>
+                <div class="my-listings-mini">
+                    <% recentMyListings.forEach(v => { %>
+                    <a href="/vehicles/<%= v.id %>" class="listing-mini-card">
+                        <img src="<%= v.primary_image ? (v.primary_image.startsWith('http') ? v.primary_image : '/uploads/vehicles/' + v.primary_image) : '/images/no-vehicle.jpg' %>"
+                            alt="<%= v.title %>" onerror="this.src='/images/no-vehicle.jpg'">
+                        <div class="listing-mini-info">
+                            <div class="listing-mini-title"><%= v.title %></div>
+                            <div class="listing-mini-price">₹ <%= Number(v.price).toLocaleString('en-IN') %></div>
+                            <span class="status-badge status-<%= v.status.toLowerCase() %>"><%= v.status %></span>
+                        </div>
+                    </a>
+                    <% }) %>
+                </div>
+                <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-car"></i>
+                    <p>No listings yet. <a href="/vehicles/sell">Post your first vehicle!</a></p>
+                </div>
+                <% } %>
+            </div>
+
+            <!-- Recommended Vehicles -->
+            <div class="dashboard-section">
+                <div class="section-header-inline">
+                    <h3>Featured Vehicles</h3>
+                    <a href="/vehicles" class="btn-link">Browse All</a>
+                </div>
+                <% if (recommendedVehicles && recommendedVehicles.length > 0) { %>
+                <div class="my-listings-mini">
+                    <% recommendedVehicles.slice(0,4).forEach(v => { %>
+                    <a href="/vehicles/<%= v.id %>" class="listing-mini-card">
+                        <img src="<%= v.primary_image ? (v.primary_image.startsWith('http') ? v.primary_image : '/uploads/vehicles/' + v.primary_image) : '/images/no-vehicle.jpg' %>"
+                            alt="<%= v.title %>" onerror="this.src='/images/no-vehicle.jpg'">
+                        <div class="listing-mini-info">
+                            <div class="listing-mini-title"><%= v.title %></div>
+                            <div class="listing-mini-price">₹ <%= Number(v.price).toLocaleString('en-IN') %></div>
+                            <div class="listing-mini-loc"><i class="fas fa-map-marker-alt"></i> <%= v.registration_city || 'India' %></div>
+                        </div>
+                    </a>
+                    <% }) %>
+                </div>
+                <% } else { %>
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <p><a href="/vehicles">Browse available vehicles</a></p>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

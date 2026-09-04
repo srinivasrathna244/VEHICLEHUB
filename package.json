@@ -1,11 +1,13 @@
 {
-  "name": "bikehub",
-  "version": "1.0.0",
-  "description": "Professional Bike Marketplace",
+  "name": "vehiclehub",
+  "version": "2.0.0",
+  "description": "Production Multi-Vehicle Marketplace Platform",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "migrate": "node database/migrate.js",
+    "seed:market": "node database/seedMarketData.js"
   },
   "keywords": [],
   "author": "",

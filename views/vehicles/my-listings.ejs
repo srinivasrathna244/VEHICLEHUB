@@ -1,0 +1,125 @@
+<%- include('../partials/header', {title: 'My Listings'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="my-listings-page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1>My Vehicle Listings</h1>
+                <p>Manage all your vehicle listings from here.</p>
+            </div>
+            <a href="/vehicles/sell" class="btn btn-primary"><i class="fas fa-plus-circle"></i> New Listing</a>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="my-listings-stats">
+            <div class="ml-stat" onclick="window.location='/my-listings'">
+                <span class="ml-stat-num"><%= stats.total %></span>
+                <span class="ml-stat-label">Total</span>
+            </div>
+            <div class="ml-stat" onclick="window.location='/my-listings?status=ACTIVE'" style="cursor:pointer">
+                <span class="ml-stat-num" style="color:#16a34a"><%= stats.active_count %></span>
+                <span class="ml-stat-label">Active</span>
+            </div>
+            <div class="ml-stat">
+                <span class="ml-stat-num" style="color:#2563eb"><%= stats.sold_count %></span>
+                <span class="ml-stat-label">Sold</span>
+            </div>
+            <div class="ml-stat">
+                <span class="ml-stat-num" style="color:#d97706"><%= stats.pending_count %></span>
+                <span class="ml-stat-label">Pending</span>
+            </div>
+            <div class="ml-stat">
+                <span class="ml-stat-num" style="color:#6366f1"><%= stats.total_views || 0 %></span>
+                <span class="ml-stat-label">Total Views</span>
+            </div>
+        </div>
+
+        <!-- Status Filter Tabs -->
+        <div class="status-tabs">
+            <a href="/my-listings" class="status-tab <%= statusTab === 'ALL' ? 'active' : '' %>">All</a>
+            <a href="/my-listings?status=ACTIVE" class="status-tab <%= statusTab === 'ACTIVE' ? 'active' : '' %>">Active</a>
+            <a href="/my-listings?status=SOLD" class="status-tab <%= statusTab === 'SOLD' ? 'active' : '' %>">Sold</a>
+            <a href="/my-listings?status=PENDING" class="status-tab <%= statusTab === 'PENDING' ? 'active' : '' %>">Pending</a>
+            <a href="/my-listings?status=REJECTED" class="status-tab <%= statusTab === 'REJECTED' ? 'active' : '' %>">Rejected</a>
+        </div>
+
+        <!-- Listings Table -->
+        <% if (listings.length === 0) { %>
+        <div class="empty-state-large">
+            <i class="fas fa-car"></i>
+            <h3>No listings found</h3>
+            <p><a href="/vehicles/sell">Post your first vehicle listing</a> to reach thousands of buyers.</p>
+        </div>
+        <% } else { %>
+        <div class="listings-table-wrap">
+            <table class="listings-table">
+                <thead>
+                    <tr>
+                        <th>Vehicle</th>
+                        <th>Price</th>
+                        <th>Category</th>
+                        <th>Views</th>
+                        <th>Inquiries</th>
+                        <th>Favorites</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% listings.forEach(v => { %>
+                    <tr>
+                        <td>
+                            <div class="listing-row-vehicle">
+                                <img src="<%= v.primary_image ? (v.primary_image.startsWith('http') ? v.primary_image : '/uploads/vehicles/' + v.primary_image) : '/images/no-vehicle.jpg' %>"
+                                    alt="<%= v.title %>" class="listing-row-img"
+                                    onerror="this.src='/images/no-vehicle.jpg'">
+                                <div>
+                                    <div class="listing-row-title"><%= v.title %></div>
+                                    <div class="listing-row-sub"><%= v.manufacturing_year %> &bull; <%= v.kilometers.toLocaleString('en-IN') %> km &bull; <%= v.fuel_type %></div>
+                                    <div class="listing-row-city"><i class="fas fa-map-marker-alt"></i> <%= v.registration_city || 'N/A' %></div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><strong>₹ <%= Number(v.price).toLocaleString('en-IN') %></strong></td>
+                        <td><span class="category-pill"><%= v.category_name %></span></td>
+                        <td><%= v.views_count || 0 %></td>
+                        <td><%= v.inquiries_count || 0 %></td>
+                        <td><%= v.favorites_count || 0 %></td>
+                        <td>
+                            <span class="status-badge status-<%= v.status.toLowerCase() %>"><%= v.status %></span>
+                            <% if (v.rejection_reason) { %>
+                            <div class="rejection-note" title="<%= v.rejection_reason %>"><i class="fas fa-info-circle"></i> Reason</div>
+                            <% } %>
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <a href="/vehicles/<%= v.id %>" class="btn-action view" title="View"><i class="fas fa-eye"></i></a>
+                                <% if (v.status !== 'DELETED') { %>
+                                <a href="/vehicles/edit/<%= v.id %>" class="btn-action edit" title="Edit"><i class="fas fa-edit"></i></a>
+                                <% } %>
+                                <% if (v.status === 'ACTIVE') { %>
+                                <form action="/vehicles/sold/<%= v.id %>" method="POST" style="display:inline" onsubmit="return confirm('Mark this vehicle as SOLD?')">
+                                    <button type="submit" class="btn-action sold" title="Mark Sold"><i class="fas fa-check"></i></button>
+                                </form>
+                                <% } %>
+                                <% if (v.status === 'SOLD' || v.status === 'REJECTED') { %>
+                                <form action="/vehicles/repost/<%= v.id %>" method="POST" style="display:inline">
+                                    <button type="submit" class="btn-action repost" title="Repost"><i class="fas fa-redo"></i></button>
+                                </form>
+                                <% } %>
+                                <form action="/vehicles/delete/<%= v.id %>" method="POST" style="display:inline" onsubmit="return confirm('Permanently delete this listing? This cannot be undone.')">
+                                    <button type="submit" class="btn-action delete" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

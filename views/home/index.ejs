@@ -1,0 +1,179 @@
+<%- include('../partials/header', {title: title}) %>
+<%- include('../partials/navbar') %>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+        <h1>Find Your Perfect Vehicle</h1>
+        <p>Buy & Sell Bikes, Cars, Trucks, Tractors & More Across India</p>
+
+        <form action="/vehicles" method="GET" class="hero-search-form">
+            <div class="hero-search-bar">
+                <input type="text" name="search" placeholder="Search by brand, model, city, registration number..."
+                    value="<%= typeof filters !== 'undefined' ? (filters.search || '') : '' %>">
+                <select name="category">
+                    <option value="">All Categories</option>
+                    <% categories.forEach(cat => { %>
+                    <option value="<%= cat.slug %>"><%= cat.name %></option>
+                    <% }) %>
+                </select>
+                <button type="submit" class="btn btn-hero-search">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <strong><%= stats.vehiclesCount %>+</strong>
+                <span>Active Listings</span>
+            </div>
+            <div class="hero-stat">
+                <strong><%= stats.usersCount %>+</strong>
+                <span>Registered Users</span>
+            </div>
+            <div class="hero-stat">
+                <strong>12+</strong>
+                <span>Vehicle Categories</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vehicle Categories -->
+<section class="categories-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>Browse by Category</h2>
+            <p>Find the exact type of vehicle you're looking for</p>
+        </div>
+        <div class="categories-grid">
+            <% const catIcons = {
+                'bikes': '🏍️', 'scooters': '🛵', 'cars': '🚗', 'autos': '🛺',
+                'trucks': '🚚', 'lorries': '🚛', 'jcb': '🏗️', 'tractors': '🚜',
+                'buses': '🚌', 'vans': '🚐', 'electric-vehicles': '⚡', 'other-commercial': '🚑'
+            }; %>
+            <% categories.forEach(cat => { %>
+            <a href="/vehicles?category=<%= cat.slug %>" class="category-card">
+                <div class="cat-icon"><%= catIcons[cat.slug] || '🚗' %></div>
+                <div class="cat-name"><%= cat.name %></div>
+            </a>
+            <% }) %>
+        </div>
+    </div>
+</section>
+
+<!-- Recently Listed Vehicles -->
+<% if (recentVehicles && recentVehicles.length > 0) { %>
+<section class="vehicles-section bg-light">
+    <div class="container">
+        <div class="section-header">
+            <h2>Recently Listed</h2>
+            <a href="/vehicles?sort=newest" class="btn-link">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="vehicles-grid">
+            <% recentVehicles.forEach(v => { %>
+            <a href="/vehicles/<%= v.id %>" class="vehicle-card">
+                <div class="vehicle-card-img">
+                    <img src="<%= v.primary_image ? (v.primary_image.startsWith('http') ? v.primary_image : '/uploads/vehicles/' + v.primary_image) : '/images/no-vehicle.jpg' %>"
+                        alt="<%= v.title %>" loading="lazy"
+                        onerror="this.src='/images/no-vehicle.jpg'">
+                    <div class="vehicle-card-category"><%= v.category_name %></div>
+                </div>
+                <div class="vehicle-card-body">
+                    <h3 class="vehicle-title"><%= v.title %></h3>
+                    <div class="vehicle-price">₹ <%= Number(v.price).toLocaleString('en-IN') %></div>
+                    <div class="vehicle-meta">
+                        <span><i class="fas fa-road"></i> <%= v.kilometers ? v.kilometers.toLocaleString('en-IN') + ' km' : 'N/A' %></span>
+                        <span><i class="fas fa-calendar"></i> <%= v.manufacturing_year %></span>
+                        <span><i class="fas fa-gas-pump"></i> <%= v.fuel_type %></span>
+                    </div>
+                    <div class="vehicle-location">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <%= v.registration_city || 'Location not specified' %>
+                    </div>
+                </div>
+            </a>
+            <% }) %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<!-- Popular Vehicles -->
+<% if (popularVehicles && popularVehicles.length > 0) { %>
+<section class="vehicles-section">
+    <div class="container">
+        <div class="section-header">
+            <h2>🔥 Popular Listings</h2>
+            <a href="/vehicles?sort=popular" class="btn-link">View All <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="vehicles-grid">
+            <% popularVehicles.forEach(v => { %>
+            <a href="/vehicles/<%= v.id %>" class="vehicle-card">
+                <div class="vehicle-card-img">
+                    <img src="<%= v.primary_image ? (v.primary_image.startsWith('http') ? v.primary_image : '/uploads/vehicles/' + v.primary_image) : '/images/no-vehicle.jpg' %>"
+                        alt="<%= v.title %>" loading="lazy"
+                        onerror="this.src='/images/no-vehicle.jpg'">
+                    <div class="vehicle-card-category"><%= v.category_name %></div>
+                    <% if (v.views_count > 10) { %><div class="vehicle-hot-badge">🔥 Hot</div><% } %>
+                </div>
+                <div class="vehicle-card-body">
+                    <h3 class="vehicle-title"><%= v.title %></h3>
+                    <div class="vehicle-price">₹ <%= Number(v.price).toLocaleString('en-IN') %></div>
+                    <div class="vehicle-meta">
+                        <span><i class="fas fa-road"></i> <%= v.kilometers ? v.kilometers.toLocaleString('en-IN') + ' km' : 'N/A' %></span>
+                        <span><i class="fas fa-calendar"></i> <%= v.manufacturing_year %></span>
+                    </div>
+                    <div class="vehicle-location"><i class="fas fa-map-marker-alt"></i> <%= v.registration_city || 'India' %></div>
+                </div>
+            </a>
+            <% }) %>
+        </div>
+    </div>
+</section>
+<% } %>
+
+<!-- Why VehicleHub -->
+<section class="why-section bg-light">
+    <div class="container">
+        <div class="section-header"><h2>Why VehicleHub?</h2></div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Safe & Secure</h3>
+                <p>All listings are moderated by our trust & safety team to ensure quality and authenticity.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💰</div>
+                <h3>Zero Commission</h3>
+                <p>Post your vehicle listing completely free. We charge no commission on successful sales.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📍</div>
+                <h3>Pan-India Coverage</h3>
+                <p>Search and sell vehicles across all districts, cities, and mandals in India.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Direct Messaging</h3>
+                <p>Connect directly with buyers and sellers through our built-in secure messaging system.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container cta-content">
+        <h2>Ready to Sell Your Vehicle?</h2>
+        <p>Post your vehicle listing in 3 minutes and reach thousands of buyers across India for FREE.</p>
+        <a href="<%= user ? '/vehicles/sell' : '/register' %>" class="btn btn-cta">
+            <i class="fas fa-plus-circle"></i>
+            <%= user ? 'Post Your Vehicle Now' : 'Register & Start Selling' %>
+        </a>
+    </div>
+</section>
+
+<%- include('../partials/footer') %>

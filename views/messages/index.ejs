@@ -1,0 +1,56 @@
+<%- include('../partials/header', {title: 'My Messages'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="messages-page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1><i class="fas fa-comment-dots"></i> Conversations</h1>
+                <p>Direct messages with buyers and sellers on VehicleHub.</p>
+            </div>
+        </div>
+
+        <div class="messages-layout">
+            <div class="conversations-list-full">
+                <% if (conversations.length === 0) { %>
+                <div class="empty-state-large">
+                    <i class="far fa-comments"></i>
+                    <h3>No conversations yet</h3>
+                    <p>When you contact sellers or buyers message you about your listings, your conversations will appear here.</p>
+                    <a href="/vehicles" class="btn btn-primary mt-16"><i class="fas fa-search"></i> Browse Vehicles</a>
+                </div>
+                <% } else { %>
+                <div class="convo-items">
+                    <% conversations.forEach(c => { %>
+                    <% const isBuyer = (user.id === c.buyer_id); %>
+                    <% const otherName = isBuyer ? `${c.seller_first_name} ${c.seller_last_name}` : `${c.buyer_first_name} ${c.buyer_last_name}`; %>
+                    <% const otherAvatar = isBuyer ? c.seller_avatar : c.buyer_avatar; %>
+                    <a href="/messages/<%= c.id %>" class="convo-item <%= c.unread_count > 0 ? 'unread' : '' %>">
+                        <div class="convo-avatar-wrap">
+                            <img src="/uploads/avatars/<%= otherAvatar || 'default-avatar.png' %>" alt="<%= otherName %>"
+                                class="convo-avatar" onerror="this.src='/images/default-avatar.png'">
+                            <% if (c.unread_count > 0) { %><span class="convo-unread-dot"></span><% } %>
+                        </div>
+                        <div class="convo-info">
+                            <div class="convo-header-row">
+                                <span class="convo-name"><%= otherName %></span>
+                                <span class="convo-time"><%= new Date(c.last_message_time || c.updated_at).toLocaleDateString('en-IN', {month:'short', day:'numeric'}) %></span>
+                            </div>
+                            <div class="convo-vehicle-badge">
+                                <i class="fas fa-car-side"></i> <%= c.vehicle_title %> &bull; ₹<%= Number(c.vehicle_price).toLocaleString('en-IN') %>
+                            </div>
+                            <div class="convo-last-msg"><%= c.last_message || 'Started conversation' %></div>
+                        </div>
+                        <div class="convo-thumb">
+                            <img src="<%= c.vehicle_image ? '/uploads/vehicles/' + c.vehicle_image : '/images/no-vehicle.jpg' %>" alt="Vehicle" onerror="this.src='/images/no-vehicle.jpg'">
+                        </div>
+                    </a>
+                    <% }) %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,55 @@
+<%- include('../partials/header', {title: 'Manage Categories'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="admin-page">
+    <div class="container">
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-th"></i> Vehicle Categories</h1>
+                <p>Configure platform categories, active statuses, and display order.</p>
+            </div>
+            <a href="/admin" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Dashboard</a>
+        </div>
+
+        <div class="table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Slug</th>
+                        <th>Icon Class</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% categories.forEach(c => { %>
+                    <tr>
+                        <td><%= c.id %></td>
+                        <form action="/admin/categories/update" method="POST">
+                            <input type="hidden" name="category_id" value="<%= c.id %>">
+                            <td><input type="text" name="name" class="form-control" value="<%= c.name %>" required style="min-width:140px"></td>
+                            <td><input type="text" name="slug" class="form-control" value="<%= c.slug %>" required style="min-width:120px"></td>
+                            <td><input type="text" name="icon" class="form-control" value="<%= c.icon %>" style="min-width:120px"></td>
+                            <td><input type="text" name="description" class="form-control" value="<%= c.description || '' %>" style="min-width:200px"></td>
+                            <td>
+                                <select name="is_active" class="form-control" style="min-width:100px">
+                                    <option value="1" <%= c.is_active ? 'selected' : '' %>>Active</option>
+                                    <option value="0" <%= !c.is_active ? 'selected' : '' %>>Disabled</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-save"></i> Save</button>
+                            </td>
+                        </form>
+                    </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

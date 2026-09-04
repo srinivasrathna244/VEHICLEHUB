@@ -1,60 +1,9 @@
 const express = require("express");
-
 const router = express.Router();
+const homeController = require("../controllers/homeController");
+const { requireLogin } = require("../middleware/authMiddleware");
 
-const authMiddleware = require("../middleware/authMiddleware");
-
-
-
-// ===============================
-// Home Page
-// ===============================
-
-router.get("/",(req,res)=>{
-
-
-    res.render("index",{
-
-        title:"Home",
-
-        user:req.session.user || null
-
-    });
-
-
-});
-
-
-
-
-
-// ===============================
-// Dashboard
-// ===============================
-
-router.get(
-
-    "/dashboard",
-
-    authMiddleware,
-
-    (req,res)=>{
-
-
-        res.render("dashboard",{
-
-            title:"Dashboard",
-
-            user:req.session.user
-
-
-        });
-
-
-    }
-
-);
-
-
+router.get("/", homeController.landingPage);
+router.get("/dashboard", requireLogin, homeController.dashboard);
 
 module.exports = router;

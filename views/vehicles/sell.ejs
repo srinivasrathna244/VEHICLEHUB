@@ -1,0 +1,286 @@
+<%- include('../partials/header', {title: 'Sell Vehicle'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="sell-page">
+    <div class="container">
+        <div class="sell-header">
+            <h1><i class="fas fa-plus-circle"></i> List Your Vehicle</h1>
+            <p>Reach thousands of buyers across India. Free listing, no commissions.</p>
+        </div>
+
+        <form action="/vehicles/sell" method="POST" enctype="multipart/form-data" id="sellForm" class="sell-form">
+
+            <!-- Step 1: Category -->
+            <div class="form-card">
+                <h3><span class="step-num">1</span> Vehicle Category</h3>
+                <div class="categories-select-grid">
+                    <% const catIcons = {
+                        'bikes':'🏍️','scooters':'🛵','cars':'🚗','autos':'🛺',
+                        'trucks':'🚚','lorries':'🚛','jcb':'🏗️','tractors':'🚜',
+                        'buses':'🚌','vans':'🚐','electric-vehicles':'⚡','other-commercial':'🚑'
+                    }; %>
+                    <% categories.forEach(cat => { %>
+                    <label class="cat-select-card" for="cat_<%= cat.id %>">
+                        <input type="radio" name="category_id" id="cat_<%= cat.id %>" value="<%= cat.id %>"
+                            class="cat-radio" <%= (formData.category_id == cat.id) ? 'checked' : '' %> required>
+                        <div class="cat-select-inner">
+                            <div class="cat-icon-big"><%= catIcons[cat.slug] || '🚗' %></div>
+                            <div class="cat-select-name"><%= cat.name %></div>
+                        </div>
+                    </label>
+                    <% }) %>
+                </div>
+            </div>
+
+            <!-- Step 2: Basic Info -->
+            <div class="form-card">
+                <h3><span class="step-num">2</span> Vehicle Information</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Brand / Manufacturer *</label>
+                        <input type="text" name="brand" class="form-control" placeholder="e.g. Honda, Yamaha, Tata, Mahindra" value="<%= formData.brand || '' %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Model *</label>
+                        <input type="text" name="model" class="form-control" placeholder="e.g. Activa, Swift, Bolero" value="<%= formData.model || '' %>" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Variant</label>
+                        <input type="text" name="variant" class="form-control" placeholder="e.g. VX, ZX, Sport" value="<%= formData.variant || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Title (Auto-generated if blank)</label>
+                        <input type="text" name="title" class="form-control" placeholder="Will be auto-generated from brand+model" value="<%= formData.title || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Manufacturing Year *</label>
+                        <input type="number" name="manufacturing_year" class="form-control" min="1970" max="<%= new Date().getFullYear() + 1 %>" placeholder="e.g. 2020" value="<%= formData.manufacturing_year || '' %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Registration Year</label>
+                        <input type="number" name="registration_year" class="form-control" min="1970" max="<%= new Date().getFullYear() + 1 %>" placeholder="e.g. 2020" value="<%= formData.registration_year || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Registration Number</label>
+                        <input type="text" name="registration_number" class="form-control" placeholder="e.g. TS09AB1234" value="<%= formData.registration_number || '' %>" style="text-transform:uppercase">
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Color</label>
+                        <input type="text" name="vehicle_color" class="form-control" placeholder="e.g. Red, Black, White" value="<%= formData.vehicle_color || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₹) *</label>
+                        <input type="number" name="price" class="form-control" placeholder="Enter asking price" min="1000" value="<%= formData.price || '' %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kilometers Driven *</label>
+                        <input type="number" name="kilometers" class="form-control" placeholder="Total km driven" min="0" value="<%= formData.kilometers || '' %>" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fuel Type *</label>
+                        <select name="fuel_type" class="form-control" required>
+                            <option value="">Select Fuel Type</option>
+                            <% fuelTypes.forEach(f => { %><option value="<%= f %>" <%= (formData.fuel_type === f) ? 'selected' : '' %>><%= f %></option><% }) %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Transmission *</label>
+                        <select name="transmission" class="form-control" required>
+                            <option value="">Select Transmission</option>
+                            <% transmissions.forEach(t => { %><option value="<%= t %>" <%= (formData.transmission === t) ? 'selected' : '' %>><%= t %></option><% }) %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ownership *</label>
+                        <select name="ownership_type" class="form-control" required>
+                            <option value="">Select Ownership</option>
+                            <% ownershipTypes.forEach(o => { %><option value="<%= o %>" <%= (formData.ownership_type === o) ? 'selected' : '' %>><%= o %></option><% }) %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mileage</label>
+                        <input type="text" name="mileage" class="form-control" placeholder="e.g. 45 kmpl" value="<%= formData.mileage || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Engine Capacity</label>
+                        <input type="text" name="engine_capacity" class="form-control" placeholder="e.g. 150cc, 1500cc, 3.8L" value="<%= formData.engine_capacity || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Insurance Status</label>
+                        <select name="insurance_status" class="form-control">
+                            <% insuranceStatuses.forEach(i => { %><option value="<%= i %>" <%= (formData.insurance_status === i) ? 'selected' : '' %>><%= i %></option><% }) %>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category-Specific Fields -->
+            <div class="form-card" id="catSpecificFields">
+                <h3><span class="step-num">3</span> Category-Specific Details <small>(fill relevant fields)</small></h3>
+                <div class="form-row">
+                    <div class="form-group" id="seatsField">
+                        <label>Number of Seats (Cars/Buses/Vans)</label>
+                        <input type="number" name="seats" class="form-control" min="1" max="100" value="<%= formData.seats || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Body Type (Cars/Buses)</label>
+                        <input type="text" name="body_type" class="form-control" placeholder="e.g. SUV, Sedan, Sleeper" value="<%= formData.body_type || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Number of Tyres (Trucks/Lorries)</label>
+                        <input type="number" name="number_of_tyres" class="form-control" min="2" max="22" value="<%= formData.number_of_tyres || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Payload Capacity (Trucks/Lorries)</label>
+                        <input type="text" name="payload_capacity" class="form-control" placeholder="e.g. 5 Ton, 20 Ton" value="<%= formData.payload_capacity || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Operating Hours (JCB/Construction)</label>
+                        <input type="number" name="operating_hours" class="form-control" min="0" value="<%= formData.operating_hours || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Horsepower (Tractors)</label>
+                        <input type="number" name="horsepower" class="form-control" min="0" value="<%= formData.horsepower || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Drive Type (Tractors/Trucks)</label>
+                        <input type="text" name="drive_type" class="form-control" placeholder="e.g. 2WD, 4WD" value="<%= formData.drive_type || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" name="air_conditioning" value="1" <%= formData.air_conditioning ? 'checked' : '' %>> Air Conditioning (Cars)</label>
+                        <label style="margin-top:8px"><input type="checkbox" name="airbags" value="1" <%= formData.airbags ? 'checked' : '' %>> Airbags (Cars)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Condition & Damage -->
+            <div class="form-card">
+                <h3><span class="step-num">4</span> Condition & Damage Disclosure</h3>
+                <p class="condition-note"><i class="fas fa-info-circle"></i> Please honestly disclose the vehicle condition. Buyers rely on this information. Misrepresentation may result in account suspension.</p>
+
+                <div class="form-group">
+                    <label>Overall Condition *</label>
+                    <select name="condition_rating" class="form-control" required>
+                        <% conditions.forEach(c => { %><option value="<%= c %>" <%= (formData.condition_rating === c) ? 'selected' : '' %>><%= c %></option><% }) %>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Scratches (if any)</label>
+                        <textarea name="scratches" class="form-control" rows="2" placeholder="Describe any visible scratches..."><%= formData.scratches || '' %></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Dents (if any)</label>
+                        <textarea name="dents" class="form-control" rows="2" placeholder="Describe any dents..."><%= formData.dents || '' %></textarea>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Accident History</label>
+                        <textarea name="accident_history" class="form-control" rows="2" placeholder="Describe any accident history (write 'None' if none)..."><%= formData.accident_history || '' %></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Repairs Done</label>
+                        <textarea name="repairs" class="form-control" rows="2" placeholder="Any major repairs/replacements..."><%= formData.repairs || '' %></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mechanical Issues</label>
+                    <textarea name="mechanical_issues" class="form-control" rows="2" placeholder="Any known mechanical issues..."><%= formData.mechanical_issues || '' %></textarea>
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="form-card">
+                <h3><span class="step-num">5</span> Location Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" name="registration_city" class="form-control" placeholder="e.g. Hyderabad" value="<%= formData.registration_city || user.city || '' %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>District</label>
+                        <input type="text" name="registration_district" class="form-control" placeholder="e.g. Rangareddy" value="<%= formData.registration_district || user.district || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Mandal</label>
+                        <input type="text" name="registration_mandal" class="form-control" placeholder="Mandal" value="<%= formData.registration_mandal || user.mandal || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" name="registration_state" class="form-control" placeholder="e.g. Telangana" value="<%= formData.registration_state || user.state || '' %>">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-card">
+                <h3><span class="step-num">6</span> Description</h3>
+                <div class="form-group">
+                    <textarea name="description" class="form-control" rows="5" placeholder="Describe your vehicle — original purchase, modifications, reason for selling, etc."><%= formData.description || '' %></textarea>
+                </div>
+            </div>
+
+            <!-- Images -->
+            <div class="form-card">
+                <h3><span class="step-num">7</span> Vehicle Photos (Max 10)</h3>
+                <p class="upload-note">Upload clear, well-lit photos. First photo becomes the primary image. Max 5MB per image (JPG, PNG, WEBP, AVIF).</p>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" name="images" id="imageInput" multiple accept=".jpg,.jpeg,.png,.webp,.avif" class="file-input">
+                    <div class="upload-placeholder">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click or drag images here</p>
+                        <small>Up to 10 images, max 5MB each</small>
+                    </div>
+                </div>
+                <div class="image-preview-grid" id="previewGrid"></div>
+            </div>
+
+            <div class="form-card form-submit-card">
+                <div class="submit-disclaimer">
+                    <i class="fas fa-shield-alt"></i>
+                    By submitting, you confirm that the information provided is accurate and that this vehicle is legally yours to sell.
+                </div>
+                <button type="submit" class="btn btn-primary btn-large btn-block">
+                    <i class="fas fa-paper-plane"></i> Publish Vehicle Listing
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/sell.js"></script>
+<%- include('../partials/footer') %>

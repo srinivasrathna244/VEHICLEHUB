@@ -1,0 +1,119 @@
+<%- include('../partials/header', {title: 'Register'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-left">
+            <div class="auth-left-content">
+                <a href="/" class="auth-logo"><i class="fas fa-car-side"></i> Vehicle<strong>Hub</strong></a>
+                <h2>Join VehicleHub!</h2>
+                <p>Create your free account and start buying or selling vehicles across India today.</p>
+                <div class="auth-features">
+                    <div class="auth-feature-item"><i class="fas fa-check-circle"></i> 100% Free Registration</div>
+                    <div class="auth-feature-item"><i class="fas fa-check-circle"></i> Post unlimited listings</div>
+                    <div class="auth-feature-item"><i class="fas fa-check-circle"></i> Direct buyer-seller contact</div>
+                    <div class="auth-feature-item"><i class="fas fa-check-circle"></i> Safe & secure platform</div>
+                </div>
+            </div>
+        </div>
+        <div class="auth-right">
+            <div class="auth-form-wrapper">
+                <h2>Create Your Account</h2>
+                <p class="auth-subtitle">Already have an account? <a href="/login">Login here</a></p>
+
+                <form action="/register" method="POST" class="auth-form" id="registerForm" novalidate>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="first_name">First Name *</label>
+                            <input type="text" id="first_name" name="first_name" class="form-control"
+                                placeholder="First Name" value="<%= formData.first_name || '' %>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="last_name">Last Name *</label>
+                            <input type="text" id="last_name" name="last_name" class="form-control"
+                                placeholder="Last Name" value="<%= formData.last_name || '' %>" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" class="form-control"
+                            placeholder="you@example.com" value="<%= formData.email || '' %>" required autocomplete="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Mobile Number *</label>
+                        <div class="phone-field">
+                            <span class="phone-prefix">+91</span>
+                            <input type="tel" id="phone" name="phone" class="form-control"
+                                placeholder="10-digit mobile number" maxlength="10"
+                                value="<%= formData.phone || '' %>" required autocomplete="tel">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="password">Password *</label>
+                            <div class="password-field">
+                                <input type="password" id="password" name="password" class="form-control"
+                                    placeholder="Min 8 characters" required autocomplete="new-password">
+                                <button type="button" class="toggle-password" data-target="password" aria-label="Show password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password *</label>
+                            <div class="password-field">
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-control"
+                                    placeholder="Repeat password" required autocomplete="new-password">
+                                <button type="button" class="toggle-password" data-target="confirm_password" aria-label="Show password">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <textarea id="address" name="address" class="form-control" rows="2"
+                            placeholder="Door no, Street, Area"><%= formData.address || '' %></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <input type="text" id="city" name="city" class="form-control"
+                                placeholder="City" value="<%= formData.city || '' %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="district">District</label>
+                            <input type="text" id="district" name="district" class="form-control"
+                                placeholder="District" value="<%= formData.district || '' %>">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="state">State</label>
+                            <input type="text" id="state" name="state" class="form-control"
+                                placeholder="State" value="<%= formData.state || '' %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="pincode">Pincode</label>
+                            <input type="text" id="pincode" name="pincode" class="form-control"
+                                placeholder="6-digit PIN" maxlength="6" value="<%= formData.pincode || '' %>">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i> Create Free Account
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/js/register.js"></script>
+<%- include('../partials/footer') %>

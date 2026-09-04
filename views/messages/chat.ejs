@@ -1,0 +1,98 @@
+<%- include('../partials/header', {title: title}) %>
+<%- include('../partials/navbar') %>
+
+<div class="chat-page">
+    <div class="container">
+        <div class="chat-layout">
+            <!-- Sidebar: Conversations List -->
+            <aside class="chat-sidebar">
+                <div class="chat-sidebar-header">
+                    <h3><i class="fas fa-comments"></i> Chats</h3>
+                    <a href="/messages" class="btn-icon" title="All Messages"><i class="fas fa-list"></i></a>
+                </div>
+                <div class="chat-sidebar-list">
+                    <% conversations.forEach(c => { %>
+                    <% const isBuyer = (user.id === c.buyer_id); %>
+                    <% const otherName = isBuyer ? c.seller_first_name : c.buyer_first_name; %>
+                    <% const otherAvatar = isBuyer ? c.seller_avatar : c.buyer_avatar; %>
+                    <a href="/messages/<%= c.id %>" class="chat-sidebar-item <%= c.id === activeConversation.id ? 'active' : '' %>">
+                        <img src="/uploads/avatars/<%= otherAvatar || 'default-avatar.png' %>" alt="<%= otherName %>"
+                            class="chat-mini-avatar" onerror="this.src='/images/default-avatar.png'">
+                        <div class="chat-mini-info">
+                            <div class="chat-mini-name"><%= otherName %></div>
+                            <div class="chat-mini-veh"><%= c.vehicle_title %></div>
+                            <div class="chat-mini-last"><%= c.last_message ? c.last_message.substring(0, 25) + '...' : '' %></div>
+                        </div>
+                    </a>
+                    <% }) %>
+                </div>
+            </aside>
+
+            <!-- Main Chat Area -->
+            <main class="chat-main">
+                <% const isBuyer = (user.id === activeConversation.buyer_id); %>
+                <% const otherUser = isBuyer ? 
+                    { id: activeConversation.seller_id, name: `${activeConversation.seller_first_name} ${activeConversation.seller_last_name}`, avatar: activeConversation.seller_avatar, role: 'Seller' } : 
+                    { id: activeConversation.buyer_id, name: `${activeConversation.buyer_first_name} ${activeConversation.buyer_last_name}`, avatar: activeConversation.buyer_avatar, role: 'Buyer' }; %>
+
+                <!-- Chat Header -->
+                <div class="chat-header">
+                    <div class="chat-header-user">
+                        <img src="/uploads/avatars/<%= otherUser.avatar || 'default-avatar.png' %>" alt="<%= otherUser.name %>"
+                            class="chat-user-avatar" onerror="this.src='/images/default-avatar.png'">
+                        <div>
+                            <div class="chat-user-name"><%= otherUser.name %> <span class="chat-role-pill"><%= otherUser.role %></span></div>
+                            <div class="chat-user-status">Online</div>
+                        </div>
+                    </div>
+
+                    <!-- Vehicle Summary In Header -->
+                    <div class="chat-vehicle-badge">
+                        <img src="<%= activeConversation.vehicle_image ? '/uploads/vehicles/' + activeConversation.vehicle_image : '/images/no-vehicle.jpg' %>" alt="Vehicle" onerror="this.src='/images/no-vehicle.jpg'">
+                        <div>
+                            <a href="/vehicles/<%= activeConversation.vehicle_id %>" target="_blank" class="chat-veh-title"><%= activeConversation.vehicle_title %></a>
+                            <div class="chat-veh-price">₹ <%= Number(activeConversation.vehicle_price).toLocaleString('en-IN') %></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Messages Thread -->
+                <div class="chat-messages" id="chatMessages">
+                    <% if (messages.length === 0) { %>
+                    <div class="chat-empty">
+                        <p>No messages yet. Send a message to begin discussing this vehicle!</p>
+                    </div>
+                    <% } else { %>
+                    <% messages.forEach(m => { %>
+                    <% const isMe = (m.sender_id === user.id); %>
+                    <div class="chat-msg <%= isMe ? 'me' : 'other' %>">
+                        <div class="chat-bubble">
+                            <div class="chat-bubble-text"><%= m.message %></div>
+                            <div class="chat-bubble-time"><%= new Date(m.created_at).toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'}) %></div>
+                        </div>
+                    </div>
+                    <% }) %>
+                    <% } %>
+                </div>
+
+                <!-- Chat Input Form -->
+                <div class="chat-footer">
+                    <form action="/messages/<%= activeConversation.id %>/send" method="POST" id="chatForm" class="chat-input-form">
+                        <input type="text" name="message" id="messageInput" class="form-control chat-input" placeholder="Type a message..." autocomplete="off" required>
+                        <button type="submit" class="btn btn-primary btn-send"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto scroll to bottom
+const chatBox = document.getElementById('chatMessages');
+if (chatBox) {
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+
+<%- include('../partials/footer') %>

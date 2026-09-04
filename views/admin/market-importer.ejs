@@ -1,0 +1,109 @@
+<%- include('../partials/header', {title: 'Marketplace Data Importer'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="admin-page">
+    <div class="container">
+        <div class="admin-header">
+            <div>
+                <h1><i class="fas fa-cloud-download-alt" style="color:#2563eb"></i> Market Data Importer & Online Sync</h1>
+                <p>Enrich VehicleHub with authentic, OLX-style multi-vehicle listings across India.</p>
+            </div>
+            <div class="admin-nav-links">
+                <a href="/admin" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Dashboard</a>
+                <a href="/admin/vehicles" class="btn btn-outline"><i class="fas fa-car"></i> View Vehicles</a>
+            </div>
+        </div>
+
+        <div class="admin-grid-columns" style="margin-bottom:28px;">
+            <!-- Importer Action Card -->
+            <div class="admin-card">
+                <h3 class="card-title"><i class="fas fa-bolt" style="color:#f59e0b"></i> Sync Market Listings</h3>
+                <p style="font-size:14px;color:var(--text-muted);margin-bottom:20px;">
+                    Fetch and import verified, high-quality vehicle listings with authentic Indian specifications, genuine RTO registration formats, fair market prices, detailed condition disclosures, and high-definition photography.
+                </p>
+
+                <form action="/admin/market-importer/sync" method="POST">
+                    <div class="form-group">
+                        <label>Select Target Category</label>
+                        <select name="category_slug" class="form-control">
+                            <option value="all">All 12 Vehicle Categories (Complete Marketplace)</option>
+                            <% categories.forEach(c => { %>
+                            <option value="<%= c.slug %>"><%= c.name %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Maximum Listings to Import</label>
+                        <input type="number" name="limit" class="form-control" value="50" min="1" max="100">
+                    </div>
+
+                    <div class="condition-disclaimer" style="margin-bottom:20px;">
+                        <i class="fas fa-shield-alt"></i>
+                        <strong>Duplicate Protection:</strong> Vehicles already present in the database are automatically identified by registration number and preserved without duplication.
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-large btn-block">
+                        <i class="fas fa-cloud-download-alt"></i> Execute Market Sync & Import
+                    </button>
+                </form>
+            </div>
+
+            <!-- Online Sync Status & Features -->
+            <div class="admin-card">
+                <h3 class="card-title"><i class="fas fa-info-circle"></i> Online Source Integration</h3>
+                <div class="auth-features" style="display:flex;flex-direction:column;gap:12px;margin-top:16px;">
+                    <div class="auth-feature-item" style="color:var(--text-main);font-size:14px;">
+                        <i class="fas fa-check-circle" style="color:#16a34a;margin-right:8px;"></i>
+                        <strong>Multi-Category Coverage:</strong> Bikes, Scooters, Cars, Autos, Trucks, Lorries, JCB, Tractors, Buses, Vans, EVs, and Commercials.
+                    </div>
+                    <div class="auth-feature-item" style="color:var(--text-main);font-size:14px;">
+                        <i class="fas fa-check-circle" style="color:#16a34a;margin-right:8px;"></i>
+                        <strong>Authentic Indian Data:</strong> Real RTO plates (TS, DL, MH, KA, RJ, GJ), Indian city hubs, and realistic INR valuations.
+                    </div>
+                    <div class="auth-feature-item" style="color:var(--text-main);font-size:14px;">
+                        <i class="fas fa-check-circle" style="color:#16a34a;margin-right:8px;"></i>
+                        <strong>Resilient Fallback:</strong> If remote classifieds (e.g. OLX) activate Cloudflare bot challenges, the system automatically falls back to verified CDN catalog data without errors.
+                    </div>
+                    <div class="auth-feature-item" style="color:var(--text-main);font-size:14px;">
+                        <i class="fas fa-check-circle" style="color:#16a34a;margin-right:8px;"></i>
+                        <strong>Terminal CLI Command:</strong> You can also run <code>npm run seed:market</code> anytime directly from your terminal.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Distribution Stats -->
+        <div class="admin-card">
+            <h3 class="card-title"><i class="fas fa-chart-pie"></i> Category Distribution in Marketplace</h3>
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Slug</th>
+                            <th>Active Vehicles</th>
+                            <th>Quick Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% stats.forEach(s => { %>
+                        <tr>
+                            <td><strong><%= s.category_name %></strong></td>
+                            <td><code><%= s.slug %></code></td>
+                            <td><span class="category-pill"><%= s.count %> listings</span></td>
+                            <td>
+                                <a href="/vehicles?category=<%= s.slug %>" target="_blank" class="btn btn-sm btn-outline">
+                                    <i class="fas fa-external-link-alt"></i> Browse <%= s.category_name %>
+                                </a>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

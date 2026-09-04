@@ -1,0 +1,79 @@
+<%- include('../partials/header', {title: 'My Profile'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="profile-page">
+    <div class="container">
+        <div class="profile-layout">
+            <!-- Profile Card -->
+            <div class="profile-main-card">
+                <div class="profile-header-box">
+                    <div class="profile-avatar-wrap">
+                        <img src="/uploads/avatars/<%= profileUser.profile_photo || 'default-avatar.png' %>"
+                            alt="<%= profileUser.first_name %>" class="profile-avatar-large"
+                            onerror="this.src='/images/default-avatar.png'">
+                        <% if (profileUser.role === 'ADMIN') { %>
+                        <span class="role-badge admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+                        <% } %>
+                    </div>
+                    <div class="profile-title-box">
+                        <h2><%= profileUser.first_name %> <%= profileUser.last_name %></h2>
+                        <p class="profile-subtext"><i class="fas fa-envelope"></i> <%= profileUser.email %> &bull; <i class="fas fa-phone"></i> +91 <%= profileUser.phone %></p>
+                        <p class="profile-joined"><i class="fas fa-calendar-alt"></i> Member since <%= new Date(profileUser.created_at).toLocaleDateString('en-IN', {month:'long', year:'numeric'}) %></p>
+                    </div>
+                    <div class="profile-actions-top">
+                        <a href="/profile/edit" class="btn btn-primary"><i class="fas fa-edit"></i> Edit Profile</a>
+                    </div>
+                </div>
+
+                <!-- Profile Stats -->
+                <div class="profile-stats-row">
+                    <div class="p-stat">
+                        <span class="p-stat-val"><%= stats.totalListings %></span>
+                        <span class="p-stat-lbl">Vehicles Listed</span>
+                    </div>
+                    <div class="p-stat">
+                        <span class="p-stat-val"><%= stats.totalFavorites %></span>
+                        <span class="p-stat-lbl">Saved Vehicles</span>
+                    </div>
+                    <div class="p-stat">
+                        <span class="p-stat-val"><%= stats.avgRating > 0 ? stats.avgRating : 'New' %></span>
+                        <span class="p-stat-lbl">Seller Rating</span>
+                    </div>
+                    <div class="p-stat">
+                        <span class="p-stat-val"><%= stats.totalReviews %></span>
+                        <span class="p-stat-lbl">Buyer Reviews</span>
+                    </div>
+                </div>
+
+                <!-- Personal Info Section -->
+                <div class="profile-details-section">
+                    <h3><i class="fas fa-id-card"></i> Account Information</h3>
+                    <div class="profile-info-grid">
+                        <div class="p-info-item"><span class="p-info-lbl">First Name</span><span class="p-info-val"><%= profileUser.first_name %></span></div>
+                        <div class="p-info-item"><span class="p-info-lbl">Last Name</span><span class="p-info-val"><%= profileUser.last_name %></span></div>
+                        <div class="p-info-item"><span class="p-info-lbl">Email Address</span><span class="p-info-val"><%= profileUser.email %></span></div>
+                        <div class="p-info-item"><span class="p-info-lbl">Mobile Number</span><span class="p-info-val">+91 <%= profileUser.phone %></span></div>
+                        <div class="p-info-item"><span class="p-info-lbl">City</span><span class="p-info-val"><%= profileUser.city || 'Not provided' %></span></div>
+                        <div class="p-info-item"><span class="p-info-lbl">District</span><span class="p-info-val"><%= profileUser.district || 'Not provided' %></span></div>
+                        <div class="p-info-item"><span class="p-info-lbl">Mandal</span><span class="p-info-val"><%= profileUser.mandal || 'Not provided' %></span></div>
+                        <div class="p-info-item"><span class="p-info-lbl">State</span><span class="p-info-val"><%= profileUser.state || 'Not provided' %></span></div>
+                        <div class="p-info-item"><span class="p-info-lbl">Pincode</span><span class="p-info-val"><%= profileUser.pincode || 'Not provided' %></span></div>
+                        <div class="p-info-item full-width"><span class="p-info-lbl">Address</span><span class="p-info-val"><%= profileUser.address || 'Not provided' %></span></div>
+                    </div>
+                </div>
+
+                <!-- Security & Quick Links -->
+                <div class="profile-security-section">
+                    <h3><i class="fas fa-lock"></i> Security</h3>
+                    <div class="security-links">
+                        <a href="/profile/change-password" class="btn btn-outline"><i class="fas fa-key"></i> Change Password</a>
+                        <a href="/my-listings" class="btn btn-outline"><i class="fas fa-list-alt"></i> Manage My Listings</a>
+                        <a href="/logout" class="btn btn-outline text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

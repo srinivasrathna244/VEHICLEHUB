@@ -1,0 +1,287 @@
+<%- include('../partials/header', {title: title}) %>
+<%- include('../partials/navbar') %>
+
+<div class="sell-page">
+    <div class="container">
+        <div class="sell-header">
+            <h1><i class="fas fa-edit"></i> Edit Vehicle Listing</h1>
+            <p>Update vehicle details, pricing, condition disclosure, and photos.</p>
+        </div>
+
+        <form action="/vehicles/edit/<%= vehicle.id %>" method="POST" enctype="multipart/form-data" id="editForm" class="sell-form">
+
+            <!-- Step 1: Category -->
+            <div class="form-card">
+                <h3><span class="step-num">1</span> Vehicle Category</h3>
+                <div class="categories-select-grid">
+                    <% const catIcons = {
+                        'bikes':'🏍️','scooters':'🛵','cars':'🚗','autos':'🛺',
+                        'trucks':'🚚','lorries':'🚛','jcb':'🏗️','tractors':'🚜',
+                        'buses':'🚌','vans':'🚐','electric-vehicles':'⚡','other-commercial':'🚑'
+                    }; %>
+                    <% categories.forEach(cat => { %>
+                    <label class="cat-select-card" for="cat_<%= cat.id %>">
+                        <input type="radio" name="category_id" id="cat_<%= cat.id %>" value="<%= cat.id %>"
+                            class="cat-radio" <%= (vehicle.category_id == cat.id) ? 'checked' : '' %> required>
+                        <div class="cat-select-inner">
+                            <div class="cat-icon-big"><%= catIcons[cat.slug] || '🚗' %></div>
+                            <div class="cat-select-name"><%= cat.name %></div>
+                        </div>
+                    </label>
+                    <% }) %>
+                </div>
+            </div>
+
+            <!-- Step 2: Basic Info -->
+            <div class="form-card">
+                <h3><span class="step-num">2</span> Vehicle Information</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Brand / Manufacturer *</label>
+                        <input type="text" name="brand" class="form-control" value="<%= vehicle.brand %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Model *</label>
+                        <input type="text" name="model" class="form-control" value="<%= vehicle.model %>" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Variant</label>
+                        <input type="text" name="variant" class="form-control" value="<%= vehicle.variant || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Title</label>
+                        <input type="text" name="title" class="form-control" value="<%= vehicle.title %>" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Manufacturing Year *</label>
+                        <input type="number" name="manufacturing_year" class="form-control" min="1970" max="<%= new Date().getFullYear() + 1 %>" value="<%= vehicle.manufacturing_year %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Registration Year</label>
+                        <input type="number" name="registration_year" class="form-control" min="1970" max="<%= new Date().getFullYear() + 1 %>" value="<%= vehicle.registration_year || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Registration Number</label>
+                        <input type="text" name="registration_number" class="form-control" value="<%= vehicle.registration_number || '' %>" style="text-transform:uppercase">
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Color</label>
+                        <input type="text" name="vehicle_color" class="form-control" value="<%= vehicle.vehicle_color || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Price (₹) *</label>
+                        <input type="number" name="price" class="form-control" min="1000" value="<%= vehicle.price %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Kilometers Driven *</label>
+                        <input type="number" name="kilometers" class="form-control" min="0" value="<%= vehicle.kilometers %>" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fuel Type *</label>
+                        <select name="fuel_type" class="form-control" required>
+                            <% fuelTypes.forEach(f => { %><option value="<%= f %>" <%= (vehicle.fuel_type === f) ? 'selected' : '' %>><%= f %></option><% }) %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Transmission *</label>
+                        <select name="transmission" class="form-control" required>
+                            <% transmissions.forEach(t => { %><option value="<%= t %>" <%= (vehicle.transmission === t) ? 'selected' : '' %>><%= t %></option><% }) %>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ownership *</label>
+                        <select name="ownership_type" class="form-control" required>
+                            <% ownershipTypes.forEach(o => { %><option value="<%= o %>" <%= (vehicle.ownership_type === o) ? 'selected' : '' %>><%= o %></option><% }) %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mileage</label>
+                        <input type="text" name="mileage" class="form-control" value="<%= vehicle.mileage || '' %>">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Engine Capacity</label>
+                        <input type="text" name="engine_capacity" class="form-control" value="<%= vehicle.engine_capacity || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Insurance Status</label>
+                        <select name="insurance_status" class="form-control">
+                            <% insuranceStatuses.forEach(i => { %><option value="<%= i %>" <%= (vehicle.insurance_status === i) ? 'selected' : '' %>><%= i %></option><% }) %>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category-Specific Fields -->
+            <div class="form-card">
+                <h3><span class="step-num">3</span> Specific Specs</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Number of Seats</label>
+                        <input type="number" name="seats" class="form-control" min="1" max="100" value="<%= vehicle.seats || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Body Type</label>
+                        <input type="text" name="body_type" class="form-control" value="<%= vehicle.body_type || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Number of Tyres</label>
+                        <input type="number" name="number_of_tyres" class="form-control" min="2" max="22" value="<%= vehicle.number_of_tyres || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Payload Capacity</label>
+                        <input type="text" name="payload_capacity" class="form-control" value="<%= vehicle.payload_capacity || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Operating Hours</label>
+                        <input type="number" name="operating_hours" class="form-control" min="0" value="<%= vehicle.operating_hours || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>Horsepower</label>
+                        <input type="number" name="horsepower" class="form-control" min="0" value="<%= vehicle.horsepower || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Drive Type</label>
+                        <input type="text" name="drive_type" class="form-control" value="<%= vehicle.drive_type || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label><input type="checkbox" name="air_conditioning" value="1" <%= vehicle.air_conditioning ? 'checked' : '' %>> Air Conditioning</label>
+                        <label style="margin-top:8px"><input type="checkbox" name="airbags" value="1" <%= vehicle.airbags ? 'checked' : '' %>> Airbags</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Condition & Damage -->
+            <div class="form-card">
+                <h3><span class="step-num">4</span> Condition & Damage Disclosure</h3>
+                <div class="form-group">
+                    <label>Overall Condition *</label>
+                    <select name="condition_rating" class="form-control" required>
+                        <% conditions.forEach(c => { %><option value="<%= c %>" <%= (vehicle.condition_rating === c) ? 'selected' : '' %>><%= c %></option><% }) %>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Scratches</label>
+                        <textarea name="scratches" class="form-control" rows="2"><%= vehicle.scratches || '' %></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Dents</label>
+                        <textarea name="dents" class="form-control" rows="2"><%= vehicle.dents || '' %></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Accident History</label>
+                        <textarea name="accident_history" class="form-control" rows="2"><%= vehicle.accident_history || '' %></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Repairs Done</label>
+                        <textarea name="repairs" class="form-control" rows="2"><%= vehicle.repairs || '' %></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Mechanical Issues</label>
+                    <textarea name="mechanical_issues" class="form-control" rows="2"><%= vehicle.mechanical_issues || '' %></textarea>
+                </div>
+            </div>
+
+            <!-- Location -->
+            <div class="form-card">
+                <h3><span class="step-num">5</span> Location Details</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>City *</label>
+                        <input type="text" name="registration_city" class="form-control" value="<%= vehicle.registration_city || '' %>" required>
+                    </div>
+                    <div class="form-group">
+                        <label>District</label>
+                        <input type="text" name="registration_district" class="form-control" value="<%= vehicle.registration_district || '' %>">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Mandal</label>
+                        <input type="text" name="registration_mandal" class="form-control" value="<%= vehicle.registration_mandal || '' %>">
+                    </div>
+                    <div class="form-group">
+                        <label>State</label>
+                        <input type="text" name="registration_state" class="form-control" value="<%= vehicle.registration_state || '' %>">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-card">
+                <h3><span class="step-num">6</span> Description</h3>
+                <div class="form-group">
+                    <textarea name="description" class="form-control" rows="5"><%= vehicle.description || '' %></textarea>
+                </div>
+            </div>
+
+            <!-- Existing & New Images -->
+            <div class="form-card">
+                <h3><span class="step-num">7</span> Photos</h3>
+                <% if (images && images.length > 0) { %>
+                <p>Current Photos (check to delete):</p>
+                <div class="existing-photos-grid">
+                    <% images.forEach(img => { %>
+                    <div class="existing-photo-item">
+                        <img src="/uploads/vehicles/<%= img.image %>" alt="Vehicle Photo">
+                        <label class="delete-photo-label">
+                            <input type="checkbox" name="delete_images" value="<%= img.id %>"> Delete
+                        </label>
+                    </div>
+                    <% }) %>
+                </div>
+                <% } %>
+
+                <p class="upload-note" style="margin-top:16px">Upload Additional Photos (Max 10 total):</p>
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" name="images" id="imageInput" multiple accept=".jpg,.jpeg,.png,.webp,.avif" class="file-input">
+                    <div class="upload-placeholder">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click or drag images here to add more</p>
+                    </div>
+                </div>
+                <div class="image-preview-grid" id="previewGrid"></div>
+            </div>
+
+            <div class="form-card form-submit-card">
+                <button type="submit" class="btn btn-primary btn-large btn-block">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/js/sell.js"></script>
+<%- include('../partials/footer') %>

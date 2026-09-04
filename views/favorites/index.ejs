@@ -1,0 +1,56 @@
+<%- include('../partials/header', {title: 'My Favorites'}) %>
+<%- include('../partials/navbar') %>
+
+<div class="favorites-page">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <h1><i class="fas fa-heart" style="color:#ef4444"></i> My Saved Vehicles</h1>
+                <p>Vehicles you have saved to your wishlist.</p>
+            </div>
+            <a href="/vehicles" class="btn btn-outline"><i class="fas fa-search"></i> Browse More Vehicles</a>
+        </div>
+
+        <% if (vehicles.length === 0) { %>
+        <div class="empty-state-large">
+            <i class="far fa-heart"></i>
+            <h3>Your wishlist is empty</h3>
+            <p>Save vehicles while browsing so you can easily compare and review them later.</p>
+            <a href="/vehicles" class="btn btn-primary mt-16"><i class="fas fa-search"></i> Explore Vehicles</a>
+        </div>
+        <% } else { %>
+        <div class="vehicles-grid">
+            <% vehicles.forEach(v => { %>
+            <div class="vehicle-card">
+                <div class="vehicle-card-img">
+                    <img src="<%= v.primary_image ? (v.primary_image.startsWith('http') ? v.primary_image : '/uploads/vehicles/' + v.primary_image) : '/images/no-vehicle.jpg' %>"
+                        alt="<%= v.title %>" loading="lazy"
+                        onerror="this.src='/images/no-vehicle.jpg'">
+                    <div class="vehicle-card-category"><%= v.category_name %></div>
+                    <form action="/favorites/toggle/<%= v.id %>" method="POST" class="fav-form">
+                        <button type="submit" class="fav-btn favorited" title="Remove from Favorites">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="vehicle-card-body">
+                    <h3 class="vehicle-title"><a href="/vehicles/<%= v.id %>"><%= v.title %></a></h3>
+                    <div class="vehicle-price">₹ <%= Number(v.price).toLocaleString('en-IN') %></div>
+                    <div class="vehicle-meta">
+                        <span><i class="fas fa-road"></i> <%= v.kilometers ? v.kilometers.toLocaleString('en-IN') + ' km' : 'N/A' %></span>
+                        <span><i class="fas fa-calendar-alt"></i> <%= v.manufacturing_year %></span>
+                        <span><i class="fas fa-gas-pump"></i> <%= v.fuel_type %></span>
+                    </div>
+                    <div class="vehicle-footer">
+                        <span class="vehicle-location"><i class="fas fa-map-marker-alt"></i> <%= v.registration_city || 'India' %></span>
+                        <a href="/vehicles/<%= v.id %>" class="btn btn-sm btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

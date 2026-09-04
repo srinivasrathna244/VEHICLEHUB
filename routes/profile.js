@@ -1,39 +1,17 @@
-
 const express = require("express");
-
 const router = express.Router();
+const profileController = require("../controllers/profileController");
+const { requireLogin } = require("../middleware/authMiddleware");
+const { handleAvatarUpload } = require("../middleware/uploadMiddleware");
+const { profileValidationRules, handleValidationErrors } = require("../middleware/validationMiddleware");
 
-const path = require("path");
+router.get("/profile", requireLogin, profileController.viewProfile);
+router.get("/profile/edit", requireLogin, profileController.showEditProfile);
+router.post("/profile/edit", requireLogin, handleAvatarUpload, profileValidationRules, handleValidationErrors("/profile/edit"), profileController.updateProfile);
+router.get("/profile/change-password", requireLogin, profileController.showChangePassword);
+router.post("/profile/change-password", requireLogin, profileController.updatePassword);
 
-
-
-// ===============================
-// Profile Page
-// ===============================
-
-router.get("/profile",(req,res)=>{
-
-
-    if(!req.session.user){
-
-        return res.redirect("/login");
-
-    }
-
-
-
-    res.render("profile",{
-
-        title:"Profile",
-
-        user:req.session.user
-
-    });
-
-
-
-});
-
-
+// Legacy redirect
+router.get("/edit-profile", requireLogin, (req, res) => res.redirect("/profile/edit"));
 
 module.exports = router;
