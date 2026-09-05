@@ -140,8 +140,8 @@ BIKEHUB (VEHICLEHUB)/
 
 ### 2. Clone the Repository
 ```bash
-git clone https://github.com/srinivasrathna244/BikeHub.git
-cd BikeHub
+git clone https://github.com/srinivasrathna244/VEHICLEHUB.git
+cd VEHICLEHUB
 ```
 
 ### 3. Install Dependencies
